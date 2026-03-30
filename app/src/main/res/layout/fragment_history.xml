@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/primary"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:id="@+id/tv_total_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.7"
+                        android:letterSpacing="0.1"
+                        android:text="TỔNG THỜI GIAN HỌC"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_total_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_total_label"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="0h 0m"
+                        android:textColor="@color/white"
+                        android:textSize="48sp" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Thống kê tuần này"
+                android:textColor="@color/on_surface"
+                android:textSize="22sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="32dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:id="@+id/chart_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+                    <!-- Bars will be added here dynamically -->
+                    <View android:id="@+id/bar_1" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_2" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_3" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_4" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_5" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_6" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
+                    <View android:id="@+id/bar_7" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Phiên học gần đây"
+                android:textColor="@color/on_surface"
+                android:textSize="22sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_history" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

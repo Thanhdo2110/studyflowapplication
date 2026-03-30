@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:clipToPadding="false"
+    android:paddingBottom="100dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Hero Section: Major Exam Countdown -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_hero_exam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_primary_gradient">
+
+                <View
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="-90dp"
+                    android:layout_marginEnd="-90dp"
+                    android:alpha="0.15"
+                    android:background="@drawable/circle_white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.1"
+                        android:text="KỲ THI SẮP TỚI"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_hero_exam_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="Thi Tốt nghiệp THPT"
+                        android:textColor="@color/white"
+                        android:textSize="28sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_hero_days"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:includeFontPadding="false"
+                            android:text="45"
+                            android:textColor="@color/white"
+                            android:textSize="64sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginBottom="12dp"
+                            android:fontFamily="sans-serif-bold"
+                            android:text="ngày nữa"
+                            android:textColor="#E6FFFFFF"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Tiến độ ôn tập"
+                                android:textColor="@color/white"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tv_hero_progress_percent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:fontFamily="sans-serif-bold"
+                                android:text="65%"
+                                android:textColor="@color/white"
+                                android:textSize="13sp" />
+                        </RelativeLayout>
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/hero_progress"
+                            android:layout_width="match_parent"
+                            android:layout_height="12dp"
+                            android:progress="65"
+                            app:indicatorColor="@color/white"
+                            app:trackColor="#40000000"
+                            app:trackCornerRadius="6dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Pomodoro Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/surface_container_lowest"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:text="Pomodoro"
+                        android:textColor="@color/on_surface"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/bg_badge_secondary"
+                        android:backgroundTint="#F0E6FF"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:text="25:00"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-bold" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Tập trung cao độ cho bài học tiếp\ntheo"
+                    android:textColor="@color/on_surface_variant"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Circle Progress -->
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp">
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:progress="100"
+                            app:indicatorColor="@color/primary"
+                            app:indicatorSize="120dp"
+                            app:trackColor="@color/surface_container_high"
+                            app:trackThickness="10dp" />
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_timer"
+                            app:tint="@color/primary" />
+                    </FrameLayout>
+
+                    <!-- Pomodoro Controls -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_home_start_timer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingVertical="12dp"
+                            android:text="BẮT ĐẦU HỌC\nNGAY"
+                            android:lineSpacingExtra="2dp"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif-black"
+                            app:cornerRadius="24dp"
+                            app:elevation="4dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="TÙY\nCHỈNH"
+                                android:textColor="@color/primary"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-black" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="LỊCH\nSỬ"
+                                android:textColor="@color/on_surface_variant"
+                                android:textSize="11sp"
+                                android:fontFamily="sans-serif-black" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Daily Goal Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/surface_container_low"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Mục tiêu ngày"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp" />
+
+                <FrameLayout
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="20dp">
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/cp_home_plan_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:progress="75"
+                        app:indicatorColor="@color/primary"
+                        app:indicatorSize="140dp"
+                        app:trackColor="@color/white"
+                        app:trackThickness="12dp" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tv_home_plan_stats"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:text="3/4"
+                            android:textColor="@color/on_surface"
+                            android:textSize="28sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="BÀI HỌC"
+                            android:textColor="@color/on_surface_variant"
+                            android:textSize="10sp"
+                            android:fontFamily="sans-serif-bold"
+                            android:letterSpacing="0.1" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_badge_secondary"
+                    android:backgroundTint="#EBE4FF"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="8dp"
+                    android:text="Sắp hoàn thành!"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Tasks Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:text="Kế hoạch hôm nay"
+                android:textSize="22sp" />
+            <TextView
+                android:id="@+id/tv_home_view_all_plans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="Xem tất cả"
+                android:textColor="@color/primary"
+                android:fontFamily="sans-serif-bold" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/task_linear_progress"
+                android:layout_width="100dp"
+                android:layout_height="8dp"
+                android:progress="0"
+                app:indicatorColor="@color/primary"
+                app:trackColor="@color/surface_container_high"
+                app:trackCornerRadius="4dp" />
+            <TextView
+                android:id="@+id/tv_task_progress_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0/0 tasks completed"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_home_plans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_plan" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Study Flow</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_timer">Hẹn giờ</string>
+    <string name="nav_plan">Kế hoạch</string>
+    <string name="nav_exam">Ngày thi</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="content_description_menu">Menu</string>
+    <string name="content_description_profile">Profile</string>
+</resources>
