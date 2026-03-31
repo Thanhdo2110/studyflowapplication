@@ -27,6 +27,7 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
     private MaterialButton btnSave;
     private LinearProgressIndicator progressIndicator;
     private TextView tvProgressLabel;
+    private PlanEntity editingPlan = null;
 
     @Nullable
     @Override
@@ -65,8 +66,17 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
                     Toast.makeText(getContext(), "Thời lượng phải lớn hơn 0", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                PlanEntity plan = new PlanEntity(title, duration, false, System.currentTimeMillis());
-                viewModel.insert(plan);
+                
+                if (editingPlan != null) {
+                    editingPlan.setTitle(title);
+                    editingPlan.setDurationMinutes(duration);
+                    viewModel.update(editingPlan);
+                    editingPlan = null;
+                    btnSave.setText("Thêm kế hoạch");
+                } else {
+                    PlanEntity plan = new PlanEntity(title, duration, false, System.currentTimeMillis());
+                    viewModel.insert(plan);
+                }
 
                 etTitle.setText("");
                 etDuration.setText("");
@@ -97,7 +107,20 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
 
     @Override
     public void onCheckClick(PlanEntity plan) {
-        plan.setCompleted(!plan.isCompleted());
         viewModel.update(plan);
+    }
+
+    @Override
+    public void onEditClick(PlanEntity plan) {
+        editingPlan = plan;
+        etTitle.setText(plan.getTitle());
+        etDuration.setText(String.valueOf(plan.getDurationMinutes()));
+        btnSave.setText("Cập nhật");
+    }
+
+    @Override
+    public void onDeleteClick(PlanEntity plan) {
+        viewModel.delete(plan);
+        Toast.makeText(getContext(), "Đã xóa kế hoạch", Toast.LENGTH_SHORT).show();
     }
 }

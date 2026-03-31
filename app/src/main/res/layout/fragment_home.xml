@@ -92,6 +92,18 @@
                         app:indicatorColor="@color/white"
                         app:trackColor="#40000000"
                         app:trackCornerRadius="6dp" />
+
+                    <TextView
+                        android:id="@+id/tv_next_exam_preview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="Tiếp theo: Kiểm tra Toán (15 ngày)"
+                        tools:visibility="visible" />
                 </LinearLayout>
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -143,14 +155,17 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Daily Goal Card -->
+        <!-- Daily Goal Card (Redesigned) -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_daily_goal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="@color/surface_container_low"
+            app:cardBackgroundColor="@color/surface_container_lowest"
             app:cardCornerRadius="28dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/outline_variant">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -168,24 +183,29 @@
                     android:textSize="18sp" />
 
                 <FrameLayout
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="16dp">
+
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/cp_home_plan_progress"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:progress="75"
                         app:indicatorColor="@color/primary"
                         app:indicatorSize="140dp"
-                        app:trackColor="@color/white"
-                        app:trackThickness="12dp" />
+                        app:trackColor="@color/surface_container_high"
+                        app:trackThickness="12dp"
+                        app:trackCornerRadius="6dp" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/tv_home_plan_stats"
                             android:layout_width="wrap_content"
@@ -193,15 +213,16 @@
                             android:fontFamily="sans-serif-black"
                             android:text="3/4"
                             android:textColor="@color/on_surface"
-                            android:textSize="28sp" />
+                            android:textSize="32sp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-bold"
+                            android:letterSpacing="0.1"
                             android:text="BÀI HỌC"
                             android:textColor="@color/on_surface_variant"
-                            android:textSize="11sp"
-                            android:fontFamily="sans-serif-bold"
-                            android:letterSpacing="0.1" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </FrameLayout>
             </LinearLayout>

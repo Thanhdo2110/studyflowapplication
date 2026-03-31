@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,8 +19,16 @@ import java.util.Locale;
 
 public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHolder> {
 
-    public ExamAdapter() {
+    private final OnExamClickListener listener;
+
+    public interface OnExamClickListener {
+        void onEditClick(ExamEntity exam);
+        void onDeleteClick(ExamEntity exam);
+    }
+
+    public ExamAdapter(OnExamClickListener listener) {
         super(DIFF_CALLBACK);
+        this.listener = listener;
     }
 
     private static final DiffUtil.ItemCallback<ExamEntity> DIFF_CALLBACK = new DiffUtil.ItemCallback<ExamEntity>() {
@@ -46,25 +55,24 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
     @Override
     public void onBindViewHolder(@NonNull ExamViewHolder holder, int position) {
         ExamEntity exam = getItem(position);
-        holder.bind(exam);
+        holder.bind(exam, listener);
     }
 
     static class ExamViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvName, tvDate, tvDays, tvDaysLabel;
+        private final TextView tvName, tvDate, tvDays;
         private final CircularProgressIndicator progressIndicator;
-        private final ImageView ivIcon;
+        private final ImageView ivMore;
 
         public ExamViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_exam_name);
             tvDate = itemView.findViewById(R.id.tv_exam_date);
             tvDays = itemView.findViewById(R.id.tv_days_remaining);
-            tvDaysLabel = itemView.findViewById(R.id.tv_days_label);
             progressIndicator = itemView.findViewById(R.id.progress_exam);
-            ivIcon = itemView.findViewById(R.id.iv_exam_icon);
+            ivMore = itemView.findViewById(R.id.iv_exam_more);
         }
 
-        public void bind(ExamEntity exam) {
+        public void bind(ExamEntity exam, OnExamClickListener listener) {
             tvName.setText(exam.getName());
             
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM, yyyy", new Locale("vi", "VN"));
@@ -75,8 +83,32 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
             tvDays.setText(String.valueOf(Math.max(0, days)));
             
             progressIndicator.setProgress(exam.getProgress());
-            
-            // Customize icon/color based on category if needed
+
+            ivMore.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
+
+                // Xóa phần sửa (không cho phép sửa)
+                popup.getMenu().findItem(R.id.action_edit).setVisible(false);
+
+                // Nếu kỳ thi đã hoàn thành (tiến độ 100%) hoặc đã qua ngày thì không cho xóa
+                if (exam.getProgress() >= 100 || days < 0) {
+                    popup.getMenu().findItem(R.id.action_delete).setVisible(false);
+                }
+
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.action_delete) {
+                        if (listener != null) listener.onDeleteClick(exam);
+                        return true;
+                    }
+                    return false;
+                });
+                
+                // Chỉ hiển thị popup nếu item Xóa hiển thị
+                if (popup.getMenu().findItem(R.id.action_delete).isVisible()) {
+                    popup.show();
+                }
+            });
         }
     }
 }

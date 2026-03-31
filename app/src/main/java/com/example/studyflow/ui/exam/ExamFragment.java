@@ -20,13 +20,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ExamFragment extends Fragment {
+public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickListener {
 
     private ExamViewModel viewModel;
     private ExamAdapter adapter;
     private Calendar calendar = Calendar.getInstance();
     private EditText etName, etDate;
     private MaterialButton btnSave;
+    private ExamEntity editingExam = null;
 
     @Nullable
     @Override
@@ -39,7 +40,7 @@ public class ExamFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_exams);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ExamAdapter();
+        adapter = new ExamAdapter(this);
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(ExamViewModel.class);
@@ -56,8 +57,17 @@ public class ExamFragment extends Fragment {
                 return;
             }
             
-            ExamEntity exam = new ExamEntity(name, calendar.getTimeInMillis(), "Chung", 0);
-            viewModel.insert(exam);
+            if (editingExam == null) {
+                ExamEntity exam = new ExamEntity(name, calendar.getTimeInMillis(), "Chung", 0);
+                viewModel.insert(exam);
+            } else {
+                editingExam.setName(name);
+                editingExam.setExamDate(calendar.getTimeInMillis());
+                viewModel.update(editingExam);
+                editingExam = null;
+                btnSave.setText("Lưu");
+            }
+            
             etName.setText("");
             etDate.setText("");
         });
@@ -74,5 +84,26 @@ public class ExamFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             etDate.setText(sdf.format(calendar.getTime()));
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    @Override
+    public void onEditClick(ExamEntity exam) {
+        editingExam = exam;
+        etName.setText(exam.getName());
+        calendar.setTimeInMillis(exam.getExamDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        etDate.setText(sdf.format(calendar.getTime()));
+        btnSave.setText("Cập nhật");
+    }
+
+    @Override
+    public void onDeleteClick(ExamEntity exam) {
+        viewModel.delete(exam);
+        if (editingExam != null && editingExam.getId() == exam.getId()) {
+            editingExam = null;
+            etName.setText("");
+            etDate.setText("");
+            btnSave.setText("Lưu");
+        }
     }
 }

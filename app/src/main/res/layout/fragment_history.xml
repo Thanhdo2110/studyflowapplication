@@ -10,18 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="80dp">
+        android:paddingBottom="100dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="32dp"
                 app:cardBackgroundColor="@color/primary"
                 app:cardCornerRadius="28dp"
                 app:cardElevation="4dp"
@@ -40,8 +40,8 @@
                         android:letterSpacing="0.1"
                         android:text="TỔNG THỜI GIAN HỌC"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textSize="11sp"
+                        android:fontFamily="sans-serif-black" />
 
                     <TextView
                         android:id="@+id/tv_total_time"
@@ -67,32 +67,40 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 app:cardBackgroundColor="@color/surface_container_lowest"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline_variant">
 
                 <LinearLayout
-                    android:id="@+id/chart_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="bottom"
-                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:padding="20dp">
-                    <!-- Bars will be added here dynamically -->
-                    <View android:id="@+id/bar_1" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_2" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_3" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_4" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_5" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_6" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary_fixed" />
-                    <View android:id="@+id/bar_7" android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_margin="4dp" android:background="@color/primary" />
+
+                    <LinearLayout
+                        android:id="@+id/chart_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_1" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_2" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_3" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_4" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_5" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_6" />
+                        <include layout="@layout/layout_chart_bar" android:id="@+id/bar_container_7" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
+                android:id="@+id/tv_recent_history_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -107,6 +115,10 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_history" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="80dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

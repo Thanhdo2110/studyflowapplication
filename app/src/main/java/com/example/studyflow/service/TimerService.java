@@ -31,6 +31,9 @@ public class TimerService extends Service {
 
     private MutableLiveData<String> _currentMode = new MutableLiveData<>("CHỌN CHẾ ĐỘ");
     public LiveData<String> currentMode = _currentMode;
+
+    private MutableLiveData<Boolean> _isGalaxyMode = new MutableLiveData<>(false);
+    public LiveData<Boolean> isGalaxyMode = _isGalaxyMode;
     
     private CountDownTimer countDownTimer;
 
@@ -57,16 +60,25 @@ public class TimerService extends Service {
         return START_STICKY;
     }
 
+    public void setGalaxyMode(boolean enabled) {
+        _isGalaxyMode.postValue(enabled);
+    }
+
     public void startTimer(long duration, String mode) {
         if (countDownTimer != null) countDownTimer.cancel();
         
-        _initialDuration.postValue(duration);
+        if (_timeRemaining.getValue() == null || _timeRemaining.getValue() <= 0) {
+            _initialDuration.postValue(duration);
+            _timeRemaining.postValue(duration);
+        }
+        
+        long timerToStart = _timeRemaining.getValue();
         _currentMode.postValue(mode);
         _isRunning.postValue(true);
         
         startForeground(NotificationHelper.TIMER_NOTIFICATION_ID, getNotification("Đang tập trung: " + mode));
 
-        countDownTimer = new CountDownTimer(duration, 1000) {
+        countDownTimer = new CountDownTimer(timerToStart, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 _timeRemaining.postValue(millisUntilFinished);
@@ -89,7 +101,7 @@ public class TimerService extends Service {
             countDownTimer.cancel();
         }
         _isRunning.postValue(false);
-        stopForeground(true);
+        updateNotification("Đang tạm dừng: " + _currentMode.getValue());
     }
 
     public void resetTimer(long duration, String mode) {
