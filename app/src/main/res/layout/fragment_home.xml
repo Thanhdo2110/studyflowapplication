@@ -14,16 +14,15 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Hero Section: Major Exam Countdown -->
+        <!-- Hero Section: Major Exam Countdown (PRO Design) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_hero_exam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="28dp"
+            app:cardCornerRadius="32dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/outline_variant">
+            app:strokeWidth="0dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -53,57 +52,136 @@
                         android:fontFamily="sans-serif-black"
                         android:text="Thi Tốt nghiệp THPT"
                         android:textColor="@color/white"
-                        android:textSize="26sp" />
+                        android:textSize="24sp" />
 
+                    <!-- Countdown Grid -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:gravity="bottom"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- Days Block -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_countdown_item"
+                            android:gravity="center"
+                            android:paddingVertical="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_countdown_days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-black"
+                                android:text="00"
+                                android:textColor="@color/white"
+                                android:textSize="32sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="NGÀY"
+                                android:textColor="#B3FFFFFF"
+                                android:textSize="10sp"
+                                android:fontFamily="sans-serif-bold"/>
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/tv_hero_days"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-black"
-                            android:includeFontPadding="false"
-                            android:text="45"
+                            android:text=":"
                             android:textColor="@color/white"
-                            android:textSize="60sp" />
+                            android:textSize="24sp"
+                            android:layout_marginHorizontal="8dp"
+                            android:fontFamily="sans-serif-black"/>
+
+                        <!-- Hours Block -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_countdown_item"
+                            android:gravity="center"
+                            android:paddingVertical="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_countdown_hours"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-black"
+                                android:text="00"
+                                android:textColor="@color/white"
+                                android:textSize="32sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="GIỜ"
+                                android:textColor="#B3FFFFFF"
+                                android:textSize="10sp"
+                                android:fontFamily="sans-serif-bold"/>
+                        </LinearLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginBottom="12dp"
-                            android:fontFamily="sans-serif-bold"
-                            android:text="ngày nữa"
-                            android:textColor="#E6FFFFFF"
-                            android:textSize="16sp" />
+                            android:text=":"
+                            android:textColor="@color/white"
+                            android:textSize="24sp"
+                            android:layout_marginHorizontal="8dp"
+                            android:fontFamily="sans-serif-black"/>
+
+                        <!-- Minutes Block -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_countdown_item"
+                            android:gravity="center"
+                            android:paddingVertical="12dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_countdown_minutes"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-black"
+                                android:text="00"
+                                android:textColor="@color/white"
+                                android:textSize="32sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PHÚT"
+                                android:textColor="#B3FFFFFF"
+                                android:textSize="10sp"
+                                android:fontFamily="sans-serif-bold"/>
+                        </LinearLayout>
+
                     </LinearLayout>
 
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:id="@+id/hero_progress"
                         android:layout_width="match_parent"
-                        android:layout_height="12dp"
-                        android:layout_marginTop="16dp"
-                        android:progress="65"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="24dp"
+                        android:progress="0"
                         app:indicatorColor="@color/white"
-                        app:trackColor="#40000000"
-                        app:trackCornerRadius="6dp" />
+                        app:trackColor="#33000000"
+                        app:trackCornerRadius="4dp" />
 
                     <TextView
                         android:id="@+id/tv_next_exam_preview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="16dp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="#B3FFFFFF"
                         android:textSize="12sp"
                         android:visibility="gone"
                         tools:text="Tiếp theo: Kiểm tra Toán (15 ngày)"
                         tools:visibility="visible" />
+
                 </LinearLayout>
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -155,7 +233,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Daily Goal Card (Redesigned) -->
+        <!-- Daily Goal Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_daily_goal"
             android:layout_width="match_parent"

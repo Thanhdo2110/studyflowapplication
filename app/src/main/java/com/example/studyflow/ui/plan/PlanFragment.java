@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.studyflow.MainActivity;
 import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.PlanEntity;
 import com.google.android.material.button.MaterialButton;
@@ -90,8 +91,8 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
 
     private void updateProgress(List<PlanEntity> plans) {
         if (plans == null || plans.isEmpty()) {
-            progressIndicator.setProgress(0);
-            tvProgressLabel.setText("0/0 tasks completed");
+            if (progressIndicator != null) progressIndicator.setProgress(0);
+            if (tvProgressLabel != null) tvProgressLabel.setText("0/0 tasks completed");
             return;
         }
 
@@ -101,8 +102,8 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
         }
 
         int progress = (int) ((float) completed / plans.size() * 100);
-        progressIndicator.setProgress(progress);
-        tvProgressLabel.setText(completed + "/" + plans.size() + " tasks completed");
+        if (progressIndicator != null) progressIndicator.setProgress(progress);
+        if (tvProgressLabel != null) tvProgressLabel.setText(completed + "/" + plans.size() + " tasks completed");
     }
 
     @Override
@@ -112,15 +113,18 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
 
     @Override
     public void onEditClick(PlanEntity plan) {
-        editingPlan = plan;
-        etTitle.setText(plan.getTitle());
-        etDuration.setText(String.valueOf(plan.getDurationMinutes()));
-        btnSave.setText("Cập nhật");
     }
 
     @Override
     public void onDeleteClick(PlanEntity plan) {
         viewModel.delete(plan);
         Toast.makeText(getContext(), "Đã xóa kế hoạch", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(PlanEntity plan) {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).navigateToTimer(plan.getTitle(), plan.getDurationMinutes());
+        }
     }
 }

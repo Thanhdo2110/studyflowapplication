@@ -26,6 +26,9 @@ public interface ExamDao {
     @Query("SELECT * FROM exams ORDER BY examDate ASC")
     LiveData<List<ExamEntity>> getAllExams();
 
+    @Query("SELECT * FROM exams ORDER BY examDate ASC")
+    List<ExamEntity> getAllExamsSync();
+
     @Query("SELECT * FROM exams WHERE id = :id")
     LiveData<ExamEntity> getExamById(int id);
 }

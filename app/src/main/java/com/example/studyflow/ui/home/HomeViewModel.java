@@ -31,4 +31,8 @@ public class HomeViewModel extends AndroidViewModel {
     public void updatePlan(PlanEntity plan) {
         planRepository.update(plan);
     }
+
+    public void deletePlan(PlanEntity plan) {
+        planRepository.delete(plan);
+    }
 }

@@ -28,4 +28,7 @@ public interface PlanDao {
 
     @Query("SELECT * FROM plans ORDER BY date DESC")
     LiveData<List<PlanEntity>> getAllPlans();
+
+    @Query("UPDATE plans SET isCompleted = 1 WHERE UPPER(title) = UPPER(:title) AND date >= :startOfDay AND date <= :endOfDay")
+    void markPlanAsCompleted(String title, long startOfDay, long endOfDay);
 }

@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.HistoryEntity;
+import com.example.studyflow.data.repository.PlanRepository;
 import com.example.studyflow.service.TimerService;
 import com.example.studyflow.ui.history.HistoryViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -50,6 +54,8 @@ public class TimerFragment extends Fragment {
     private TimerService timerService;
     private boolean isBound = false;
     private HistoryViewModel historyViewModel;
+    private PlanRepository planRepository;
+    private Ringtone ringtone;
     
     private TextView tvTimerDisplay, tvModeLabel, tvLabelStudyMode, tvLabelReset, tvLabelPause;
     private TextView tvQuoteText, tvQuoteAuthor;
@@ -131,6 +137,13 @@ public class TimerFragment extends Fragment {
             isBound = true;
             if (isAdded() && getView() != null) {
                 observeService();
+                if (getArguments() != null) {
+                    String subject = getArguments().getString("subject_name");
+                    int minutes = getArguments().getInt("duration_minutes", 0);
+                    if (subject != null && minutes > 0) {
+                        setMode(minutes * 60000L, subject.toUpperCase());
+                    }
+                }
             }
         }
 
@@ -161,6 +174,7 @@ public class TimerFragment extends Fragment {
         btnSaveSession = view.findViewById(R.id.btn_save_session);
 
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        planRepository = new PlanRepository(requireActivity().getApplication());
 
         showRandomQuote();
 
@@ -188,6 +202,7 @@ public class TimerFragment extends Fragment {
         });
 
         btnReset.setOnClickListener(v -> {
+            stopSuccessSound();
             if (isBound) {
                 isFinished = false;
                 long duration = (currentDuration > 0) ? currentDuration : (timerService.initialDuration.getValue() != null ? timerService.initialDuration.getValue() : 0);
@@ -220,19 +235,26 @@ public class TimerFragment extends Fragment {
         view.findViewById(R.id.mode_60_min).setOnClickListener(v -> setMode(3600000L, "1 TIẾNG"));
 
         btnSaveSession.setOnClickListener(v -> {
+            stopSuccessSound();
             if (isBound) {
                 Long remaining = timerService.timeRemaining.getValue();
                 Long initial = timerService.initialDuration.getValue();
+                String mode = timerService.currentMode.getValue();
                 if (remaining != null && initial != null) {
                     int elapsedMinutes = (int) ((initial - remaining) / 60000);
                     if (elapsedMinutes > 0 || isFinished) {
-                        HistoryEntity history = new HistoryEntity("Học " + timerService.currentMode.getValue(), 
+                        HistoryEntity history = new HistoryEntity("Học " + mode, 
                                 Math.max(1, elapsedMinutes), System.currentTimeMillis());
                         historyViewModel.insert(history);
+
+                        if (mode != null && !mode.isEmpty() && !mode.equals("CHỌN CHẾ ĐỘ") && !mode.equals("TÙY CHỈNH")) {
+                            planRepository.markPlanAsCompleted(mode);
+                        }
+
                         Toast.makeText(getContext(), "Đã lưu buổi học!", Toast.LENGTH_SHORT).show();
                         
                         isFinished = false;
-                        timerService.resetTimer(initial, timerService.currentMode.getValue());
+                        timerService.resetTimer(initial, mode);
                         updateBackground(timerService.isGalaxyMode.getValue(), "DEFAULT");
                     } else {
                         Toast.makeText(getContext(), "Chưa đủ thời gian để lưu", Toast.LENGTH_SHORT).show();
@@ -242,6 +264,27 @@ public class TimerFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void playSuccessSound() {
+        try {
+            if (ringtone != null && ringtone.isPlaying()) {
+                ringtone.stop();
+            }
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            ringtone = RingtoneManager.getRingtone(requireContext().getApplicationContext(), notification);
+            if (ringtone != null) {
+                ringtone.play();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopSuccessSound() {
+        if (ringtone != null && ringtone.isPlaying()) {
+            ringtone.stop();
+        }
     }
 
     private void showRandomQuote() {
@@ -256,7 +299,6 @@ public class TimerFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Thiết lập phiên học");
 
-        // Tạo layout để chứa 2 ô nhập liệu
         LinearLayout layout = new LinearLayout(requireContext());
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 40, 50, 10);
@@ -306,7 +348,7 @@ public class TimerFragment extends Fragment {
     }
 
     private void updateBackground(boolean galaxyMode, String type) {
-        if (rootLayout == null || getContext() == null) return;
+        if (rootLayout == null || !isAdded()) return;
         
         if ("SUCCESS".equals(type)) {
             GradientDrawable gd = new GradientDrawable(
@@ -316,6 +358,7 @@ public class TimerFragment extends Fragment {
             rootLayout.setBackground(gd);
             setUIColors(Color.parseColor("#BF360C"), false); 
             showFireworks();
+            playSuccessSound();
         } else if (galaxyMode) {
             GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
@@ -353,6 +396,7 @@ public class TimerFragment extends Fragment {
     }
 
     private void setUIColors(int color, boolean isDarkBg) {
+        if (!isAdded()) return;
         tvTimerDisplay.setTextColor(color);
         tvLabelStudyMode.setTextColor(color);
         tvLabelReset.setTextColor(color);
@@ -403,7 +447,7 @@ public class TimerFragment extends Fragment {
         });
 
         timerService.currentMode.observe(getViewLifecycleOwner(), mode -> {
-            if (mode != null) tvModeLabel.setText(mode);
+            if (mode != null && tvModeLabel != null) tvModeLabel.setText(mode);
         });
     }
 
@@ -423,6 +467,7 @@ public class TimerFragment extends Fragment {
     public void onPause() {
         super.onPause();
         quoteHandler.removeCallbacks(quoteRunnable);
+        stopSuccessSound();
     }
 
     @Override
@@ -439,5 +484,11 @@ public class TimerFragment extends Fragment {
             getActivity().unbindService(connection);
             isBound = false;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSuccessSound();
     }
 }

@@ -25,6 +25,7 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
         void onCheckClick(PlanEntity plan);
         void onEditClick(PlanEntity plan);
         void onDeleteClick(PlanEntity plan);
+        void onItemClick(PlanEntity plan); // Thêm sự kiện click vào item
     }
 
     public PlanAdapter(OnPlanClickListener listener) {
@@ -80,6 +81,11 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
         public void bind(PlanEntity plan, OnPlanClickListener listener, boolean showOptions) {
             updateUI(plan);
 
+            // Click vào toàn bộ item để hẹn giờ
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onItemClick(plan);
+            });
+
             ivMore.setVisibility(showOptions ? View.VISIBLE : View.GONE);
 
             btnComplete.setOnClickListener(v -> {
@@ -92,11 +98,8 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
                 ivMore.setOnClickListener(v -> {
                     PopupMenu popup = new PopupMenu(v.getContext(), v);
                     popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
-
-                    // Xóa phần sửa (không cho phép sửa)
                     popup.getMenu().findItem(R.id.action_edit).setVisible(false);
 
-                    // Nếu đã hoàn thành thì không cho xóa
                     if (plan.isCompleted()) {
                         popup.getMenu().findItem(R.id.action_delete).setVisible(false);
                     }

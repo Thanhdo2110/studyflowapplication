@@ -16,7 +16,8 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Study Flow Notifications";
             String description = "Channel for timer and exam reminders";
-            int importance = NotificationManager.IMPORTANCE_LOW; // Thấp để không kêu liên tục khi update
+            // Chỉnh lên IMPORTANCE_DEFAULT để có âm thanh cho thông báo nhắc nhở
+            int importance = NotificationManager.IMPORTANCE_DEFAULT; 
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
@@ -31,7 +32,7 @@ public class NotificationHelper {
                 .setSmallIcon(R.drawable.ic_timer)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Cao để hiện pop-up khi xong
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setAutoCancel(true);
 
