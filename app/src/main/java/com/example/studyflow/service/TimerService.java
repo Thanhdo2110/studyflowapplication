@@ -20,16 +20,16 @@ public class TimerService extends Service {
 
     private final IBinder binder = new TimerBinder();
     
-    private MutableLiveData<Long> _timeRemaining = new MutableLiveData<>(1500000L);
+    private MutableLiveData<Long> _timeRemaining = new MutableLiveData<>(0L);
     public LiveData<Long> timeRemaining = _timeRemaining;
     
     private MutableLiveData<Boolean> _isRunning = new MutableLiveData<>(false);
     public LiveData<Boolean> isRunning = _isRunning;
 
-    private MutableLiveData<Long> _initialDuration = new MutableLiveData<>(1500000L);
+    private MutableLiveData<Long> _initialDuration = new MutableLiveData<>(0L);
     public LiveData<Long> initialDuration = _initialDuration;
 
-    private MutableLiveData<String> _currentMode = new MutableLiveData<>("POMODORO");
+    private MutableLiveData<String> _currentMode = new MutableLiveData<>("CHỌN CHẾ ĐỘ");
     public LiveData<String> currentMode = _currentMode;
     
     private CountDownTimer countDownTimer;
@@ -93,10 +93,14 @@ public class TimerService extends Service {
     }
 
     public void resetTimer(long duration, String mode) {
-        pauseTimer();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        _isRunning.postValue(false);
         _initialDuration.postValue(duration);
         _timeRemaining.postValue(duration);
         _currentMode.postValue(mode);
+        stopForeground(true);
     }
 
     private Notification getNotification(String contentText) {

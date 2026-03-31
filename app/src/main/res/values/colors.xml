@@ -45,4 +45,6 @@
     <color name="orange_700">#c2410c</color>
     <color name="red_100">#fee2e2</color>
     <color name="red_600">#dc2626</color>
+    <color name="green_100">#dcfce7</color>
+    <color name="green_600">#16a34a</color>
 </resources>

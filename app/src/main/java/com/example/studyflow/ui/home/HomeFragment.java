@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
 import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.ExamEntity;
 import com.example.studyflow.data.database.entities.PlanEntity;
@@ -22,8 +20,8 @@ import com.example.studyflow.ui.plan.PlanFragment;
 import com.example.studyflow.ui.exam.ExamFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -31,10 +29,9 @@ public class HomeFragment extends Fragment {
     private PlanAdapter planAdapter;
     private TextView tvHeroExamName, tvHeroDays, tvPlanStats;
     private LinearProgressIndicator heroProgress;
+    private CircularProgressIndicator cpPlanProgress;
     private MaterialButton btnStartTimer;
     private TextView tvViewAllPlans;
-    private LinearProgressIndicator taskLinearProgress;
-    private TextView tvTaskProgressText;
 
     @Nullable
     @Override
@@ -45,10 +42,9 @@ public class HomeFragment extends Fragment {
         tvHeroDays = view.findViewById(R.id.tv_hero_days);
         tvPlanStats = view.findViewById(R.id.tv_home_plan_stats);
         heroProgress = view.findViewById(R.id.hero_progress);
+        cpPlanProgress = view.findViewById(R.id.cp_home_plan_progress);
         btnStartTimer = view.findViewById(R.id.btn_home_start_timer);
         tvViewAllPlans = view.findViewById(R.id.tv_home_view_all_plans);
-        taskLinearProgress = view.findViewById(R.id.task_linear_progress);
-        tvTaskProgressText = view.findViewById(R.id.tv_task_progress_text);
 
         RecyclerView rvPlans = view.findViewById(R.id.rv_home_plans);
         rvPlans.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -80,12 +76,9 @@ public class HomeFragment extends Fragment {
                 
                 tvPlanStats.setText(completed + "/" + plans.size());
                 
-                if (taskLinearProgress != null) {
-                    taskLinearProgress.setMax(plans.size());
-                    taskLinearProgress.setProgress(completed);
-                }
-                if (tvTaskProgressText != null) {
-                    tvTaskProgressText.setText(completed + "/" + plans.size());
+                if (cpPlanProgress != null && plans.size() > 0) {
+                    cpPlanProgress.setMax(plans.size());
+                    cpPlanProgress.setProgress(completed);
                 }
             }
         });
@@ -100,6 +93,7 @@ public class HomeFragment extends Fragment {
     private void navigateToFragment(Fragment fragment, int navId) {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
+                .setReorderingAllowed(true)
                 .commit();
         
         BottomNavigationView bottomNav = getActivity().findViewById(R.id.bottom_navigation);
