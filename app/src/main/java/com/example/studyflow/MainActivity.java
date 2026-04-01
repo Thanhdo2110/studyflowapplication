@@ -27,7 +27,6 @@ import com.example.studyflow.ui.exam.ExamFragment;
 import com.example.studyflow.ui.history.HistoryFragment;
 import com.example.studyflow.ui.home.HomeFragment;
 import com.example.studyflow.ui.plan.PlanFragment;
-import com.example.studyflow.ui.settings.SettingsFragment;
 import com.example.studyflow.ui.timer.TimerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             Fragment fragment = null;
@@ -99,6 +99,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bottomNav = findViewById(R.id.bottom_navigation);
+        setupBottomNavListener();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
+
+        DailyReminderReceiver.schedule(this);
+    }
+
+    private void setupBottomNavListener() {
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             Fragment selectedFragment = null;
@@ -117,14 +129,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
-        }
-
-        DailyReminderReceiver.schedule(this);
     }
 
     public void navigateToTimer(String subject, int duration) {
@@ -138,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, timerFragment)
                 .commit();
         
+        // Tạm thời tắt listener để không bị tạo mới Fragment trống đè lên
+        bottomNav.setOnItemSelectedListener(null);
         bottomNav.setSelectedItemId(R.id.nav_timer);
+        setupBottomNavListener(); // Bật lại listener
     }
 }

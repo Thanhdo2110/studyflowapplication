@@ -16,7 +16,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/ic_menu_book"
+            app:tint="@color/violet_700" />
 
         <TextView
             android:layout_width="match_parent"

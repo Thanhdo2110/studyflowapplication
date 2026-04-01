@@ -33,6 +33,10 @@ public class PlanRepository {
         return planDao.getPlansForDay(startOfDay, endOfDay);
     }
 
+    public LiveData<List<PlanEntity>> getPlansForWeek(long startOfWeek, long endOfWeek) {
+        return planDao.getPlansForWeek(startOfWeek, endOfWeek);
+    }
+
     public void insert(PlanEntity plan) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             planDao.insert(plan);

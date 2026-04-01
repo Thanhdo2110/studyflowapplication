@@ -26,6 +26,9 @@ public interface PlanDao {
     @Query("SELECT * FROM plans WHERE date >= :startOfDay AND date <= :endOfDay ORDER BY isCompleted ASC, id DESC")
     LiveData<List<PlanEntity>> getPlansForDay(long startOfDay, long endOfDay);
 
+    @Query("SELECT * FROM plans WHERE date >= :startOfWeek AND date <= :endOfWeek")
+    LiveData<List<PlanEntity>> getPlansForWeek(long startOfWeek, long endOfWeek);
+
     @Query("SELECT * FROM plans ORDER BY date DESC")
     LiveData<List<PlanEntity>> getAllPlans();
 

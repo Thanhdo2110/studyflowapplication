@@ -20,6 +20,7 @@ public class HistoryFragment extends Fragment {
     private HistoryViewModel viewModel;
     private HistoryAdapter adapter;
     private TextView tvTotalTime, tvRecentTitle, tvTotalLabel;
+    private TextView tvStatsTrend, tvStatsMax, tvStatsGoal;
     private View[] barContainers = new View[7];
     private View[] barViews = new View[7];
     private TextView[] dayLabels = new TextView[7];
@@ -34,6 +35,10 @@ public class HistoryFragment extends Fragment {
         tvTotalTime = view.findViewById(R.id.tv_total_time);
         tvTotalLabel = view.findViewById(R.id.tv_total_label);
         tvRecentTitle = view.findViewById(R.id.tv_recent_history_title);
+        
+        tvStatsTrend = view.findViewById(R.id.tv_stats_trend);
+        tvStatsMax = view.findViewById(R.id.tv_stats_max);
+        tvStatsGoal = view.findViewById(R.id.tv_stats_goal);
         
         if (tvTotalLabel != null) {
             tvTotalLabel.setText("TỔNG THỜI GIAN TUẦN NÀY");
@@ -74,6 +79,20 @@ public class HistoryFragment extends Fragment {
             }
             float[] data = viewModel.getWeeklyData().getValue();
             if (data != null) updateChart(data, index);
+        });
+
+        // Cập nhật dữ liệu thật cho các ô thống kê
+        viewModel.getTrend().observe(getViewLifecycleOwner(), trend -> {
+            if (tvStatsTrend != null) tvStatsTrend.setText(trend);
+        });
+
+        viewModel.getMaxSessionTime().observe(getViewLifecycleOwner(), maxTime -> {
+            if (tvStatsMax != null) tvStatsMax.setText(maxTime);
+        });
+
+        // Kết nối dữ liệu mục tiêu thật từ ViewModel
+        viewModel.getWeeklyGoalProgress().observe(getViewLifecycleOwner(), goalProgress -> {
+            if (tvStatsGoal != null) tvStatsGoal.setText(goalProgress);
         });
 
         return view;
@@ -132,13 +151,11 @@ public class HistoryFragment extends Fragment {
             }
 
             if (selectedIndex != null && selectedIndex == i) {
-                // Sử dụng Drawable Gradient nổi bật cho cột được chọn
                 barViews[i].setBackgroundResource(R.drawable.bg_chart_bar_selected);
                 dayLabels[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.primary));
                 barTimeLabels[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.primary));
                 barTimeLabels[i].setAlpha(1.0f);
             } else {
-                // Sử dụng Drawable Gradient nhẹ cho cột bình thường
                 barViews[i].setBackgroundResource(R.drawable.bg_chart_bar_default);
                 dayLabels[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface_variant));
                 barTimeLabels[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface_variant));

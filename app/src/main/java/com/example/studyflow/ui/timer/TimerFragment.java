@@ -12,7 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +22,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.HistoryEntity;
 import com.example.studyflow.data.repository.PlanRepository;
 import com.example.studyflow.service.TimerService;
 import com.example.studyflow.ui.history.HistoryViewModel;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -39,18 +42,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.Position;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
-import nl.dionsegijn.konfetti.core.models.Shape;
 import nl.dionsegijn.konfetti.core.models.Size;
 import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class TimerFragment extends Fragment {
 
+    private static final String TAG = "TimerFragment";
     private TimerService timerService;
     private boolean isBound = false;
     private HistoryViewModel historyViewModel;
@@ -61,14 +65,12 @@ public class TimerFragment extends Fragment {
     private TextView tvQuoteText, tvQuoteAuthor;
     private LinearProgressIndicator progressIndicator;
     private FloatingActionButton fabPlayPause;
-    private View btnReset, btnSaveSession;
     private View rootLayout;
     private KonfettiView konfettiView;
     private long currentDuration = 0L;
-    private boolean isGalaxyMode = false;
     private boolean isFinished = false;
 
-    private final Handler quoteHandler = new Handler();
+    private final Handler quoteHandler = new Handler(Looper.getMainLooper());
     private final Runnable quoteRunnable = new Runnable() {
         @Override
         public void run() {
@@ -105,7 +107,7 @@ public class TimerFragment extends Fragment {
         new Quote("“Tuổi trẻ không có lý tưởng giống như buổi sáng không có mặt trời.”", "Belinsky"),
         new Quote("“Mục tiêu của giáo dục là soi sáng tâm hồn con người.”", "M.P. Mason"),
         new Quote("“Học tập là một kho báu sẽ đi theo chủ nhân của nó tới mọi nơi.”", "Ngạn ngữ Trung Hoa"),
-        new Quote("“Trí tuệ con người trưởng thành trong tĩnh lặng, còn tính cách trưởng thành trong bão táp.”", "Goethe"),
+        new Quote("“Trí tuệ con người trưởng thành trong tĩnh lặng, còn tính cách trưởng thành trong b bão táp.”", "Goethe"),
         new Quote("“Đọc một cuốn sách hay cũng giống như trò chuyện với một bộ óc tuyệt vời nhất.”", "René Descartes"),
         new Quote("“Trường học chỉ cho ta chìa khóa tri thức, học trong cuộc sống là công việc cả đời.”", "Bill Gates"),
         new Quote("“Những gì chúng ta biết hôm nay sẽ lỗi thời vào ngày mai. Đừng ngừng học hỏi.”", "Dorothy Billington"),
@@ -121,8 +123,8 @@ public class TimerFragment extends Fragment {
     );
 
     private static class Quote {
-        String text;
-        String author;
+        final String text;
+        final String author;
         Quote(String text, String author) {
             this.text = text;
             this.author = author;
@@ -137,19 +139,14 @@ public class TimerFragment extends Fragment {
             isBound = true;
             if (isAdded() && getView() != null) {
                 observeService();
-                if (getArguments() != null) {
-                    String subject = getArguments().getString("subject_name");
-                    int minutes = getArguments().getInt("duration_minutes", 0);
-                    if (subject != null && minutes > 0) {
-                        setMode(minutes * 60000L, subject.toUpperCase());
-                    }
-                }
+                checkArgumentsAndSetTimer();
             }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isBound = false;
+            timerService = null;
         }
     };
 
@@ -170,44 +167,57 @@ public class TimerFragment extends Fragment {
         
         progressIndicator = view.findViewById(R.id.timer_progress);
         fabPlayPause = view.findViewById(R.id.fab_play_pause);
-        btnReset = view.findViewById(R.id.btn_reset);
-        btnSaveSession = view.findViewById(R.id.btn_save_session);
+        View btnReset = view.findViewById(R.id.btn_reset);
+        View btnSaveSession = view.findViewById(R.id.btn_save_session);
 
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         planRepository = new PlanRepository(requireActivity().getApplication());
 
         showRandomQuote();
 
+        if (getArguments() != null) {
+            String subject = getArguments().getString("subject_name");
+            int minutes = getArguments().getInt("duration_minutes", 0);
+            if (minutes > 0) {
+                currentDuration = minutes * 60000L;
+                tvTimerDisplay.setText(formatTime(currentDuration));
+                if (subject != null) tvModeLabel.setText(subject.toUpperCase());
+            }
+        }
+
         fabPlayPause.setOnClickListener(v -> {
-            if (isBound) {
+            if (isBound && timerService != null) {
                 Boolean running = timerService.isRunning.getValue();
-                if (running != null && running) {
+                if (Boolean.TRUE.equals(running)) {
                     timerService.pauseTimer();
                 } else {
                     if (isFinished) {
                         Toast.makeText(getContext(), "Vui lòng nhấn Hoàn thành trước khi bắt đầu phiên mới!", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (currentDuration <= 0 && (timerService.timeRemaining.getValue() == null || timerService.timeRemaining.getValue() <= 0)) {
+                    Long timeRemaining = timerService.timeRemaining.getValue();
+                    if (currentDuration <= 0 && (timeRemaining == null || timeRemaining <= 0)) {
                         Toast.makeText(getContext(), "Hãy chọn thời gian trước", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    updateBackground(timerService.isGalaxyMode.getValue(), "DEFAULT");
+                    updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "DEFAULT");
                     Intent intent = new Intent(getActivity(), TimerService.class);
-                    ContextCompat.startForegroundService(getActivity(), intent);
-                    long durationToStart = (currentDuration > 0) ? currentDuration : (timerService.timeRemaining.getValue() != null ? timerService.timeRemaining.getValue() : 0);
+                    ContextCompat.startForegroundService(requireContext(), intent);
+                    long durationToStart = (currentDuration > 0) ? currentDuration : (timeRemaining != null ? timeRemaining : 0);
                     timerService.startTimer(durationToStart, tvModeLabel.getText().toString());
+                    currentDuration = 0;
                 }
             }
         });
 
         btnReset.setOnClickListener(v -> {
             stopSuccessSound();
-            if (isBound) {
+            if (isBound && timerService != null) {
                 isFinished = false;
-                long duration = (currentDuration > 0) ? currentDuration : (timerService.initialDuration.getValue() != null ? timerService.initialDuration.getValue() : 0);
+                Long initial = timerService.initialDuration.getValue();
+                long duration = (currentDuration > 0) ? currentDuration : (initial != null ? initial : 0);
                 timerService.resetTimer(duration, tvModeLabel.getText().toString());
-                updateBackground(timerService.isGalaxyMode.getValue(), "DEFAULT");
+                updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "DEFAULT");
             }
             showRandomQuote();
         });
@@ -222,11 +232,10 @@ public class TimerFragment extends Fragment {
 
         view.findViewById(R.id.mode_pomodoro).setOnClickListener(v -> {
             if (isFinished) return; 
-            if (isBound) {
-                boolean newMode = !timerService.isGalaxyMode.getValue();
+            if (isBound && timerService != null) {
+                boolean newMode = !Boolean.TRUE.equals(timerService.isGalaxyMode.getValue());
                 timerService.setGalaxyMode(newMode);
-                String msg = newMode ? "Đã bật không gian Galaxy" : "Đã tắt không gian Galaxy";
-                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), newMode ? "Đã bật không gian Galaxy" : "Đã tắt không gian Galaxy", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -236,7 +245,7 @@ public class TimerFragment extends Fragment {
 
         btnSaveSession.setOnClickListener(v -> {
             stopSuccessSound();
-            if (isBound) {
+            if (isBound && timerService != null) {
                 Long remaining = timerService.timeRemaining.getValue();
                 Long initial = timerService.initialDuration.getValue();
                 String mode = timerService.currentMode.getValue();
@@ -255,7 +264,7 @@ public class TimerFragment extends Fragment {
                         
                         isFinished = false;
                         timerService.resetTimer(initial, mode);
-                        updateBackground(timerService.isGalaxyMode.getValue(), "DEFAULT");
+                        updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "DEFAULT");
                     } else {
                         Toast.makeText(getContext(), "Chưa đủ thời gian để lưu", Toast.LENGTH_SHORT).show();
                     }
@@ -266,18 +275,27 @@ public class TimerFragment extends Fragment {
         return view;
     }
 
+    private void checkArgumentsAndSetTimer() {
+        if (getArguments() != null && isBound && timerService != null) {
+            String subject = getArguments().getString("subject_name");
+            int minutes = getArguments().getInt("duration_minutes", 0);
+            if (subject != null && minutes > 0) {
+                setMode(minutes * 60000L, subject.toUpperCase());
+                getArguments().clear();
+            }
+        }
+    }
+
     private void playSuccessSound() {
         try {
-            if (ringtone != null && ringtone.isPlaying()) {
-                ringtone.stop();
-            }
+            stopSuccessSound();
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             ringtone = RingtoneManager.getRingtone(requireContext().getApplicationContext(), notification);
             if (ringtone != null) {
                 ringtone.play();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error playing sound", e);
         }
     }
 
@@ -291,7 +309,7 @@ public class TimerFragment extends Fragment {
         if (tvQuoteText != null && tvQuoteAuthor != null && isAdded()) {
             Quote quote = QUOTES.get(new Random().nextInt(QUOTES.size()));
             tvQuoteText.setText(quote.text);
-            tvQuoteAuthor.setText("— " + quote.author);
+            tvQuoteAuthor.setText(getString(R.string.quote_author_format, quote.author));
         }
     }
 
@@ -326,7 +344,7 @@ public class TimerFragment extends Fragment {
                 if (minutes > 0) {
                     setMode(minutes * 60000L, subject.toUpperCase());
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), "Vui lòng nhập số phút hợp lệ", Toast.LENGTH_SHORT).show();
             }
         });
@@ -341,9 +359,10 @@ public class TimerFragment extends Fragment {
         }
         currentDuration = duration;
         tvModeLabel.setText(label);
-        if (isBound) {
+        if (tvTimerDisplay != null) tvTimerDisplay.setText(formatTime(duration));
+        if (isBound && timerService != null) {
             timerService.resetTimer(duration, label);
-            updateBackground(timerService.isGalaxyMode.getValue(), "DEFAULT");
+            updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "DEFAULT");
         }
     }
 
@@ -374,7 +393,7 @@ public class TimerFragment extends Fragment {
 
     private void showFireworks() {
         if (konfettiView == null) return;
-        EmitterConfig emitterConfig = new Emitter(5, java.util.concurrent.TimeUnit.SECONDS).perSecond(100);
+        EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(100);
         Party partyLeft = new PartyFactory(emitterConfig)
                 .angle(270)
                 .spread(90)
@@ -418,11 +437,11 @@ public class TimerFragment extends Fragment {
         timerService.timeRemaining.observe(getViewLifecycleOwner(), millis -> {
             if (tvTimerDisplay != null) tvTimerDisplay.setText(formatTime(millis));
             
-            if (millis == 0 && !isFinished && timerService.initialDuration.getValue() != null && timerService.initialDuration.getValue() > 0) {
-                Boolean running = timerService.isRunning.getValue();
-                if (running != null && !running) {
+            if (millis == 0 && !isFinished && Boolean.TRUE.equals(timerService.isRunning.getValue()) == false) {
+                Long initial = timerService.initialDuration.getValue();
+                if (initial != null && initial > 0) {
                     isFinished = true;
-                    updateBackground(timerService.isGalaxyMode.getValue(), "SUCCESS");
+                    updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "SUCCESS");
                 }
             }
 
@@ -435,14 +454,13 @@ public class TimerFragment extends Fragment {
 
         timerService.isRunning.observe(getViewLifecycleOwner(), isRunning -> {
             if (fabPlayPause != null) {
-                fabPlayPause.setImageResource(isRunning ? R.drawable.ic_pause : R.drawable.ic_play_arrow);
+                fabPlayPause.setImageResource(Boolean.TRUE.equals(isRunning) ? R.drawable.ic_pause : R.drawable.ic_play_arrow);
             }
         });
 
         timerService.isGalaxyMode.observe(getViewLifecycleOwner(), galaxy -> {
-            isGalaxyMode = galaxy;
             if (!isFinished) {
-                updateBackground(galaxy, "DEFAULT");
+                updateBackground(Boolean.TRUE.equals(galaxy), "DEFAULT");
             }
         });
 
@@ -473,22 +491,35 @@ public class TimerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(getActivity(), TimerService.class);
-        getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), TimerService.class);
+            getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (isBound) {
+        if (isBound && getActivity() != null) {
             getActivity().unbindService(connection);
             isBound = false;
         }
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         stopSuccessSound();
+        rootLayout = null;
+        tvTimerDisplay = null;
+        tvModeLabel = null;
+        tvLabelStudyMode = null;
+        tvLabelReset = null;
+        tvLabelPause = null;
+        tvQuoteText = null;
+        tvQuoteAuthor = null;
+        konfettiView = null;
+        progressIndicator = null;
+        fabPlayPause = null;
     }
 }

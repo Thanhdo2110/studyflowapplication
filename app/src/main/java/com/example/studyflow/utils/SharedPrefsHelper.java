@@ -8,6 +8,7 @@ public class SharedPrefsHelper {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_DARK_MODE = "dark_mode";
+    private static final String KEY_WEEKLY_GOAL = "weekly_goal_minutes";
 
     private final SharedPreferences prefs;
 
@@ -37,5 +38,14 @@ public class SharedPrefsHelper {
 
     public boolean isDarkMode() {
         return prefs.getBoolean(KEY_DARK_MODE, false);
+    }
+
+    public void setWeeklyGoal(int minutes) {
+        prefs.edit().putInt(KEY_WEEKLY_GOAL, minutes).apply();
+    }
+
+    public int getWeeklyGoal() {
+        // Mặc định là 10 giờ (600 phút) nếu chưa thiết lập
+        return prefs.getInt(KEY_WEEKLY_GOAL, 600);
     }
 }
