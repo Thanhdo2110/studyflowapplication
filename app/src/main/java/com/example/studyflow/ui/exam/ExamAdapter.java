@@ -14,6 +14,7 @@ import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.ExamEntity;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -78,37 +79,39 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM, yyyy", new Locale("vi", "VN"));
             tvDate.setText(sdf.format(new Date(exam.getExamDate())));
             
-            long diff = exam.getExamDate() - System.currentTimeMillis();
-            long days = diff / (1000 * 60 * 60 * 24);
+            // Logic tính ngày chính xác (đã chuẩn hóa 00:00:00)
+            Calendar today = Calendar.getInstance();
+            today.set(Calendar.HOUR_OF_DAY, 0); today.set(Calendar.MINUTE, 0); today.set(Calendar.SECOND, 0); today.set(Calendar.MILLISECOND, 0);
+
+            Calendar examDate = Calendar.getInstance();
+            examDate.setTimeInMillis(exam.getExamDate());
+            examDate.set(Calendar.HOUR_OF_DAY, 0); examDate.set(Calendar.MINUTE, 0); examDate.set(Calendar.SECOND, 0); examDate.set(Calendar.MILLISECOND, 0);
+
+            long diff = examDate.getTimeInMillis() - today.getTimeInMillis();
+            int days = (int) (diff / (1000 * 60 * 60 * 24));
+
             tvDays.setText(String.valueOf(Math.max(0, days)));
-            
             progressIndicator.setProgress(exam.getProgress());
 
-            ivMore.setOnClickListener(v -> {
-                PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
+            if (ivMore != null) {
+                ivMore.setOnClickListener(v -> {
+                    PopupMenu popup = new PopupMenu(v.getContext(), v);
+                    popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
 
-                // Xóa phần sửa (không cho phép sửa)
-                popup.getMenu().findItem(R.id.action_edit).setVisible(false);
-
-                // Nếu kỳ thi đã hoàn thành (tiến độ 100%) hoặc đã qua ngày thì không cho xóa
-                if (exam.getProgress() >= 100 || days < 0) {
-                    popup.getMenu().findItem(R.id.action_delete).setVisible(false);
-                }
-
-                popup.setOnMenuItemClickListener(item -> {
-                    if (item.getItemId() == R.id.action_delete) {
-                        if (listener != null) listener.onDeleteClick(exam);
-                        return true;
+                    if (popup.getMenu().findItem(R.id.action_edit) != null) {
+                        popup.getMenu().findItem(R.id.action_edit).setVisible(false);
                     }
-                    return false;
-                });
-                
-                // Chỉ hiển thị popup nếu item Xóa hiển thị
-                if (popup.getMenu().findItem(R.id.action_delete).isVisible()) {
+
+                    popup.setOnMenuItemClickListener(item -> {
+                        if (item.getItemId() == R.id.action_delete) {
+                            if (listener != null) listener.onDeleteClick(exam);
+                            return true;
+                        }
+                        return false;
+                    });
                     popup.show();
-                }
-            });
+                });
+            }
         }
     }
 }

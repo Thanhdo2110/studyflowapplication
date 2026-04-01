@@ -15,14 +15,16 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="12dp">
 
         <!-- Icon môn học -->
-        <FrameLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/bg_primary_fixed_round"
-            android:backgroundTint="@color/violet_100">
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/violet_100"
+            app:strokeWidth="0dp">
 
             <ImageView
                 android:id="@+id/iv_plan_icon"
@@ -31,7 +33,7 @@
                 android:layout_gravity="center"
                 android:src="@drawable/ic_school"
                 app:tint="@color/violet_700" />
-        </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -45,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-bold"
-                android:text="Ôn tập Toán Giải tích"
+                android:text="Tên nhiệm vụ"
                 android:textColor="@color/on_surface"
                 android:textSize="16sp" />
 
@@ -54,43 +56,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="90 phút"
+                android:text="45 phút"
                 android:textColor="@color/on_surface_variant"
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Nút Check hoàn thành -->
+        <!-- Nút Check hoàn thành (Đã cải tiến) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_complete_task"
-            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            android:padding="0dp"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/ic_check"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="18dp"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Đánh dấu hoàn thành"
+            app:icon="@drawable/ic_check_circle_outline"
+            app:iconSize="32dp"
             app:iconTint="@color/primary"
-            app:strokeColor="@color/outline_variant"
-            app:strokeWidth="2dp" />
+            app:rippleColor="@color/primary_fixed" />
 
         <!-- Nút More Options -->
         <ImageView
             android:id="@+id/iv_plan_more"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:padding="2dp"
+            android:padding="6dp"
             android:src="@drawable/ic_more_vert"
-            app:tint="@color/on_surface_variant" />
+            app:tint="@color/outline" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

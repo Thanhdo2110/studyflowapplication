@@ -22,18 +22,19 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
 
-            <!-- Quote Section -->
+            <!-- Floating Quote Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                app:cardBackgroundColor="@color/surface_container_low"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/outline_variant">
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="8dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -46,66 +47,74 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="italic"
-                        android:text="“Hành trình vạn dặm bắt đầu từ một bước chân.”"
+                        android:text="“Học không biết chán, dạy người không biết mỏi.”"
                         android:textAlignment="center"
-                        android:textColor="@color/on_surface_variant"
-                        android:textSize="14sp" />
+                        android:textColor="@color/on_surface"
+                        android:textSize="14sp"
+                        android:lineHeight="20sp" />
 
                     <TextView
                         android:id="@+id/tv_quote_author"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="sans-serif-black"
-                        android:text="— Lão Tử"
+                        android:text="— Khổng Tử"
                         android:textAlignment="center"
                         android:textColor="@color/primary"
-                        android:textSize="12sp"
-                        android:textAllCaps="true" />
+                        android:textSize="11sp"
+                        android:alpha="0.8" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Main Timer Display Section -->
             <TextView
                 android:id="@+id/tv_mode_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-black"
-                android:letterSpacing="0.1"
-                android:text="STUDYING"
+                android:letterSpacing="0.2"
+                android:text="POMODORO"
                 android:textColor="@color/primary"
-                android:textSize="14sp" />
+                android:textSize="12sp"
+                android:textAllCaps="true" />
 
+            <!-- SỬA LỖI: Thêm clickable và focusable cho ô số -->
             <TextView
                 android:id="@+id/tv_timer_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="monospace"
+                android:layout_marginTop="-4dp"
+                android:fontFamily="sans-serif-light"
                 android:text="25:00"
                 android:textColor="@color/on_surface"
-                android:textSize="96sp"
-                android:textStyle="bold" />
+                android:textSize="110sp"
+                android:letterSpacing="-0.02"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground" />
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/timer_progress"
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:progress="70"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="32dp"
+                android:progress="100"
                 app:indicatorColor="@color/primary"
                 app:trackColor="@color/surface_container_high"
-                app:trackCornerRadius="4dp"
-                app:trackThickness="8dp" />
+                app:trackCornerRadius="5dp"
+                app:trackThickness="10dp" />
 
-            <!-- Control Buttons -->
+            <!-- Control Center -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="40dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
+                <!-- Reset Button -->
                 <LinearLayout
                     android:id="@+id/btn_reset"
                     android:layout_width="wrap_content"
@@ -113,48 +122,51 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
                         app:cardBackgroundColor="@color/red_100"
-                        app:cardCornerRadius="16dp"
+                        app:cardCornerRadius="26dp"
                         app:cardElevation="0dp"
-                        app:strokeWidth="0dp">
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/red_600">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_replay"
-                            app:tint="@color/red_600"
-                            android:contentDescription="Reset" />
+                            app:tint="@color/red_600" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
                         android:id="@+id/tv_label_reset"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif-bold"
-                        android:text="ĐẶT LẠI"
+                        android:text="Đặt lại"
+                        android:textColor="@color/on_surface_variant"
                         android:textSize="11sp" />
                 </LinearLayout>
 
+                <!-- Play/Pause FAB -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab_play_pause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="32dp"
+                    android:layout_marginHorizontal="24dp"
                     android:src="@drawable/ic_play_arrow"
                     app:backgroundTint="@color/primary"
-                    app:elevation="6dp"
+                    app:elevation="8dp"
                     app:fabCustomSize="80dp"
                     app:maxImageSize="40dp"
-                    app:tint="@color/white"
-                    android:contentDescription="Play/Pause" />
+                    app:tint="@color/white" />
 
+                <!-- Finish Button -->
                 <LinearLayout
                     android:id="@+id/btn_save_session"
                     android:layout_width="wrap_content"
@@ -162,31 +174,34 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
                         app:cardBackgroundColor="@color/green_100"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="0dp">
+                        app:cardCornerRadius="26dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/green_600">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_check"
-                            app:tint="@color/green_600"
-                            android:contentDescription="Finish" />
+                            app:tint="@color/green_600" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <TextView
                         android:id="@+id/tv_label_pause"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="sans-serif-bold"
-                        android:text="HOÀN THÀNH"
+                        android:text="Xong"
+                        android:textColor="@color/on_surface_variant"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -196,22 +211,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginTop="40dp"
-                android:fontFamily="sans-serif-bold"
-                android:text="Chế độ học tập"
+                android:layout_marginTop="32dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Khám phá chế độ"
                 android:textColor="@color/on_surface"
                 android:textSize="18sp" />
 
-            <!-- Main Mode -->
+            <!-- Galaxy Mode Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mode_pomodoro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/primary_fixed"
-                app:cardCornerRadius="24dp"
+                app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:cardBackgroundColor="@color/primary_fixed">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -219,52 +233,61 @@
                     android:padding="20dp">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/mode_icon"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        app:cardBackgroundColor="@color/on_primary_fixed"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp">
-
+                        android:id="@+id/mode_icon_container"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/white">
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_school"
-                            app:tint="@color/primary_fixed"
-                            android:contentDescription="Galaxy Mode Icon" />
+                            android:src="@drawable/ic_auto_awesome"
+                            app:tint="@color/primary" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_toEndOf="@id/mode_icon"
+                        android:layout_toEndOf="@id/mode_icon_container"
+                        android:layout_centerVertical="true"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
-                            android:text="Chế độ Galaxy"
-                            android:textColor="@color/on_primary_fixed" />
+                            android:text="Không gian Galaxy"
+                            android:textColor="@color/on_primary_fixed"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:alpha="0.7"
-                            android:text="Tập trung cao độ giữa ngân hà"
+                            android:text="Tập trung sâu trong vũ trụ"
                             android:textColor="@color/on_primary_fixed"
                             android:textSize="12sp" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/on_primary_fixed" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Quick Modes -->
+            <!-- Quick Duration Selection -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
@@ -272,45 +295,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    app:cardBackgroundColor="@color/surface_container_lowest"
+                    android:layout_marginEnd="8dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/outline_variant">
-
-                    <LinearLayout
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/secondary_container">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_schedule"
-                                app:tint="@color/secondary"
-                                android:contentDescription="15 min" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:fontFamily="sans-serif-bold"
-                            android:text="15 Phút"
-                            android:textColor="@color/on_surface"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                        android:padding="16dp"
+                        android:text="15m"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/primary" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -318,45 +314,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginHorizontal="6dp"
-                    app:cardBackgroundColor="@color/surface_container_lowest"
+                    android:layout_marginHorizontal="4dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/outline_variant">
-
-                    <LinearLayout
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/tertiary_fixed">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_schedule"
-                                app:tint="@color/tertiary"
-                                android:contentDescription="30 min" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:fontFamily="sans-serif-bold"
-                            android:text="30 Phút"
-                            android:textColor="@color/on_surface"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                        android:padding="16dp"
+                        android:text="30m"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/primary" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -364,52 +333,20 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    app:cardBackgroundColor="@color/surface_container_lowest"
+                    android:layout_marginStart="8dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/outline_variant">
-
-                    <LinearLayout
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="@color/primary_container">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_schedule"
-                                app:tint="@color/primary"
-                                android:contentDescription="60 min" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:fontFamily="sans-serif-bold"
-                            android:text="60 Phút"
-                            android:textColor="@color/on_surface"
-                            android:textSize="12sp" />
-                    </LinearLayout>
+                        android:padding="16dp"
+                        android:text="60m"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/primary" />
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-
-            <!-- Khoảng trống vật lý để cuộn qua BottomNav -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="120dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

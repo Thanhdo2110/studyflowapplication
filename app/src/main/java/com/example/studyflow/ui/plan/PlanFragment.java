@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.studyflow.MainActivity;
 import com.example.studyflow.R;
+import com.example.studyflow.data.database.entities.HistoryEntity;
 import com.example.studyflow.data.database.entities.PlanEntity;
+import com.example.studyflow.ui.history.HistoryViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickListener {
 
     private PlanViewModel viewModel;
+    private HistoryViewModel historyViewModel;
     private PlanAdapter adapter;
     private EditText etTitle, etDuration;
     private MaterialButton btnSave;
@@ -47,6 +50,8 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(PlanViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+
         viewModel.getTodayPlans().observe(getViewLifecycleOwner(), plans -> {
             adapter.submitList(plans);
             updateProgress(plans);
@@ -108,11 +113,30 @@ public class PlanFragment extends Fragment implements PlanAdapter.OnPlanClickLis
 
     @Override
     public void onCheckClick(PlanEntity plan) {
+        // Cập nhật trạng thái trong Database Kế hoạch
         viewModel.update(plan);
+
+        // Nếu đánh dấu là Hoàn thành, lưu vào Lịch sử
+        if (plan.isCompleted()) {
+            // Định dạng tên lưu lịch sử: Viết hoa toàn bộ tên môn học
+            String subjectUpper = plan.getTitle().toUpperCase();
+            HistoryEntity history = new HistoryEntity(
+                "Hoàn thành: " + subjectUpper,
+                plan.getDurationMinutes(),
+                System.currentTimeMillis()
+            );
+            historyViewModel.insert(history);
+            Toast.makeText(getContext(), "Đã lưu lịch sử: " + plan.getDurationMinutes() + " phút", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onEditClick(PlanEntity plan) {
+        editingPlan = plan;
+        etTitle.setText(plan.getTitle());
+        etDuration.setText(String.valueOf(plan.getDurationMinutes()));
+        btnSave.setText("Cập nhật");
+        etTitle.requestFocus();
     }
 
     @Override

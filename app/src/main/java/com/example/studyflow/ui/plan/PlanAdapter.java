@@ -25,7 +25,7 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
         void onCheckClick(PlanEntity plan);
         void onEditClick(PlanEntity plan);
         void onDeleteClick(PlanEntity plan);
-        void onItemClick(PlanEntity plan); // Thêm sự kiện click vào item
+        void onItemClick(PlanEntity plan);
     }
 
     public PlanAdapter(OnPlanClickListener listener) {
@@ -81,17 +81,22 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
         public void bind(PlanEntity plan, OnPlanClickListener listener, boolean showOptions) {
             updateUI(plan);
 
-            // Click vào toàn bộ item để hẹn giờ
+            // FIX: Chỉ cho phép click vào item nếu CHƯA hoàn thành
             itemView.setOnClickListener(v -> {
-                if (listener != null) listener.onItemClick(plan);
+                if (!plan.isCompleted() && listener != null) {
+                    listener.onItemClick(plan);
+                }
             });
 
             ivMore.setVisibility(showOptions ? View.VISIBLE : View.GONE);
 
+            // FIX: Chỉ cho phép nhấn nút Check nếu CHƯA hoàn thành (Khóa sau 1 lần nhấn)
             btnComplete.setOnClickListener(v -> {
-                plan.setCompleted(!plan.isCompleted());
-                updateUI(plan);
-                if (listener != null) listener.onCheckClick(plan);
+                if (!plan.isCompleted()) {
+                    plan.setCompleted(true);
+                    updateUI(plan);
+                    if (listener != null) listener.onCheckClick(plan);
+                }
             });
 
             if (showOptions) {
@@ -100,6 +105,7 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
                     popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
                     popup.getMenu().findItem(R.id.action_edit).setVisible(false);
 
+                    // Ẩn nút xóa nếu đã hoàn thành (để tránh thay đổi dữ liệu lịch sử)
                     if (plan.isCompleted()) {
                         popup.getMenu().findItem(R.id.action_delete).setVisible(false);
                     }
@@ -112,7 +118,7 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
                         return false;
                     });
                     
-                    if (popup.getMenu().findItem(R.id.action_delete).isVisible()) {
+                    if (popup.getMenu().size() > 0 && popup.getMenu().findItem(R.id.action_delete).isVisible()) {
                         popup.show();
                     }
                 });
@@ -126,13 +132,17 @@ public class PlanAdapter extends ListAdapter<PlanEntity, PlanAdapter.PlanViewHol
             if (plan.isCompleted()) {
                 btnComplete.setIconResource(R.drawable.ic_check_circle);
                 btnComplete.setIconTint(ContextCompat.getColorStateList(itemView.getContext(), R.color.primary));
+                btnComplete.setEnabled(false); // Vô hiệu hóa nút sau khi xong
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvTitle.setAlpha(0.5f);
+                itemView.setAlpha(0.8f);
             } else {
                 btnComplete.setIconResource(R.drawable.ic_check_circle_outline);
                 btnComplete.setIconTint(ContextCompat.getColorStateList(itemView.getContext(), R.color.outline_variant));
+                btnComplete.setEnabled(true);
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 tvTitle.setAlpha(1.0f);
+                itemView.setAlpha(1.0f);
             }
         }
     }
