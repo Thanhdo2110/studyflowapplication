@@ -9,15 +9,17 @@ import androidx.room.RoomDatabase;
 import com.example.studyflow.data.database.entities.ExamEntity;
 import com.example.studyflow.data.database.entities.PlanEntity;
 import com.example.studyflow.data.database.entities.HistoryEntity;
+import com.example.studyflow.data.database.entities.DiaryEntity;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ExamEntity.class, PlanEntity.class, HistoryEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {ExamEntity.class, PlanEntity.class, HistoryEntity.class, DiaryEntity.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ExamDao examDao();
     public abstract PlanDao planDao();
     public abstract HistoryDao historyDao();
+    public abstract DiaryDao diaryDao();
 
     private static volatile AppDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;

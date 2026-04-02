@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.studyflow.service.DailyReminderReceiver;
 import com.example.studyflow.ui.AboutFragment;
-import com.example.studyflow.ui.document.DocumentFragment;
+import com.example.studyflow.ui.diary.DiaryFragment;
 import com.example.studyflow.ui.exam.ExamFragment;
 import com.example.studyflow.ui.history.HistoryFragment;
 import com.example.studyflow.ui.home.HomeFragment;
@@ -68,15 +68,9 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             String title = "";
 
-            if (id == R.id.nav_thpt) {
-                fragment = DocumentFragment.newInstance("THPT", "Tài liệu THPT");
-                title = "Tài liệu THPT";
-            } else if (id == R.id.nav_thcs) {
-                fragment = DocumentFragment.newInstance("THCS", "Tài liệu THCS");
-                title = "Tài liệu THCS";
-            } else if (id == R.id.nav_dh) {
-                fragment = DocumentFragment.newInstance("DH", "Tài liệu Đại Học");
-                title = "Tài liệu Đại Học";
+            if (id == R.id.nav_diary) {
+                fragment = new DiaryFragment();
+                title = "Nhật ký học tập";
             } else if (id == R.id.nav_about) {
                 fragment = new AboutFragment();
                 title = "Về StudyFlow";
