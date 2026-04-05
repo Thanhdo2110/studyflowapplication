@@ -57,6 +57,12 @@ public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickLis
                 return;
             }
             
+            // Chuẩn hóa thời gian về 00:00:00 trước khi lưu
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            
             if (editingExam == null) {
                 ExamEntity exam = new ExamEntity(name, calendar.getTimeInMillis(), "Chung", 0);
                 viewModel.insert(exam);

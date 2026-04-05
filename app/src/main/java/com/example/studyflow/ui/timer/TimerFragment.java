@@ -62,10 +62,9 @@ public class TimerFragment extends Fragment {
     private FloatingActionButton fabPlayPause;
     private View rootLayout;
     private KonfettiView konfettiView;
-    private long currentDuration = 1500000L; 
+    private long currentDuration = 0L; 
     private boolean isFinished = false;
 
-    // Handler đổi câu nói mỗi 15 giây
     private final Handler quoteHandler = new Handler(Looper.getMainLooper());
     private final Runnable quoteRunnable = new Runnable() {
         @Override
@@ -94,12 +93,34 @@ public class TimerFragment extends Fragment {
         public void onServiceConnected(ComponentName name, IBinder service) {
             timerService = ((TimerService.TimerBinder) service).getService();
             isBound = true;
+            // Ngay khi kết nối, lấy lại các giá trị từ Service
+            syncWithService();
             observeService();
             checkArgumentsAndSetTimer();
         }
         @Override
         public void onServiceDisconnected(ComponentName name) { isBound = false; }
     };
+
+    private void syncWithService() {
+        if (timerService != null) {
+            Long remaining = timerService.timeRemaining.getValue();
+            if (remaining != null && remaining > 0) {
+                currentDuration = remaining;
+                if (tvTimerDisplay != null) tvTimerDisplay.setText(formatTime(remaining));
+            }
+            String mode = timerService.currentMode.getValue();
+            if (mode != null && tvModeLabel != null) tvModeLabel.setText(mode);
+            
+            // Khôi phục trạng thái isFinished nếu thời gian đã về 0
+            if (remaining != null && remaining == 0) {
+                Long initial = timerService.initialDuration.getValue();
+                if (initial != null && initial > 0) {
+                    isFinished = true;
+                }
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -117,8 +138,8 @@ public class TimerFragment extends Fragment {
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         planRepository = new PlanRepository(requireActivity().getApplication());
 
-        if (tvTimerDisplay != null) tvTimerDisplay.setText(formatTime(currentDuration));
-        if (tvModeLabel != null) tvModeLabel.setText("POMODORO");
+        if (tvTimerDisplay != null) tvTimerDisplay.setText("00:00");
+        if (tvModeLabel != null) tvModeLabel.setText("CHỌN CHẾ ĐỘ");
 
         updateQuote();
 
@@ -129,16 +150,24 @@ public class TimerFragment extends Fragment {
                         timerService.pauseTimer();
                     } else {
                         if (isFinished) {
-                            Toast.makeText(getContext(), "Hãy nhấn Xong trước khi bắt đầu phiên mới!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Hãy nhấn Lưu trước khi bắt đầu phiên mới!", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        if (currentDuration <= 0) {
-                            Toast.makeText(getContext(), "Vui lòng chọn thời gian!", Toast.LENGTH_SHORT).show();
+                        
+                        // Lấy thời gian từ service nếu biến local bị reset
+                        long timeToStart = currentDuration;
+                        if (timeToStart <= 0 && timerService.timeRemaining.getValue() != null) {
+                            timeToStart = timerService.timeRemaining.getValue();
+                        }
+
+                        if (timeToStart <= 0) {
+                            Toast.makeText(getContext(), "Vui lòng chọn hoặc thiết lập thời gian!", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        
                         Intent intent = new Intent(getActivity(), TimerService.class);
                         ContextCompat.startForegroundService(requireContext(), intent);
-                        timerService.startTimer(currentDuration, tvModeLabel.getText().toString().toUpperCase());
+                        timerService.startTimer(timeToStart, tvModeLabel.getText().toString().toUpperCase());
                     }
                 }
             });
@@ -184,7 +213,7 @@ public class TimerFragment extends Fragment {
                             updateBackground(Boolean.TRUE.equals(timerService.isGalaxyMode.getValue()), "DEFAULT");
                         }
                     } else {
-                        Toast.makeText(getContext(), "Bạn chưa hoàn thành thời gian!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Bạn phải hoàn thành phiên học mới được lưu!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -283,6 +312,12 @@ public class TimerFragment extends Fragment {
         timerService.timeRemaining.observe(getViewLifecycleOwner(), millis -> {
             if (millis != null) {
                 if (tvTimerDisplay != null) tvTimerDisplay.setText(formatTime(millis));
+                
+                // Đồng bộ currentDuration khi đang chạy hoặc khi bị pause
+                if (millis > 0) {
+                    currentDuration = millis;
+                }
+
                 if (millis == 0 && !isFinished) {
                     if (Boolean.FALSE.equals(timerService.isRunning.getValue())) {
                         Long initial = timerService.initialDuration.getValue();

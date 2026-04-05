@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
@@ -64,20 +66,27 @@ public class TimerService extends Service {
         _isGalaxyMode.postValue(enabled);
     }
 
+    private void runOnUiThread(Runnable runnable) {
+        new Handler(Looper.getMainLooper()).post(runnable);
+    }
+
     public void startTimer(long duration, String mode) {
         if (countDownTimer != null) countDownTimer.cancel();
         
-        if (_timeRemaining.getValue() == null || _timeRemaining.getValue() <= 0) {
-            _initialDuration.postValue(duration);
-            _timeRemaining.postValue(duration);
+        // Sử dụng logic lấy giá trị hiện tại chắc chắn hơn
+        Long currentRemaining = _timeRemaining.getValue();
+        if (currentRemaining == null || currentRemaining <= 0) {
+            _initialDuration.setValue(duration);
+            _timeRemaining.setValue(duration);
+            currentRemaining = duration;
         }
         
-        long timerToStart = _timeRemaining.getValue();
-        _currentMode.postValue(mode);
-        _isRunning.postValue(true);
+        _currentMode.setValue(mode);
+        _isRunning.setValue(true);
         
         startForeground(NotificationHelper.TIMER_NOTIFICATION_ID, getNotification("Đang tập trung: " + mode));
 
+        final long timerToStart = currentRemaining;
         countDownTimer = new CountDownTimer(timerToStart, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -87,11 +96,13 @@ public class TimerService extends Service {
 
             @Override
             public void onFinish() {
-                _isRunning.postValue(false);
-                _timeRemaining.postValue(0L);
-                stopForeground(true);
-                NotificationHelper.showTimerFinishedNotification(getApplicationContext(), "Hoàn thành!", "Bạn đã hoàn thành phiên " + mode);
-                stopSelf();
+                runOnUiThread(() -> {
+                    _isRunning.setValue(false);
+                    _timeRemaining.setValue(0L);
+                    stopForeground(true);
+                    NotificationHelper.showTimerFinishedNotification(getApplicationContext(), "Hoàn thành!", "Bạn đã hoàn thành phiên " + mode);
+                    stopSelf();
+                });
             }
         }.start();
     }
@@ -100,7 +111,7 @@ public class TimerService extends Service {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        _isRunning.postValue(false);
+        _isRunning.setValue(false);
         updateNotification("Đang tạm dừng: " + _currentMode.getValue());
     }
 
@@ -108,10 +119,10 @@ public class TimerService extends Service {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        _isRunning.postValue(false);
-        _initialDuration.postValue(duration);
-        _timeRemaining.postValue(duration);
-        _currentMode.postValue(mode);
+        _isRunning.setValue(false);
+        _initialDuration.setValue(duration);
+        _timeRemaining.setValue(duration);
+        _currentMode.setValue(mode);
         stopForeground(true);
     }
 
