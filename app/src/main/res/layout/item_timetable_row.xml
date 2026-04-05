@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- Cột Tiết -->
+    <TextView
+        android:id="@+id/tv_period_number"
+        style="@style/TimetableCell"
+        android:layout_width="50dp"
+        android:background="#F0F7FF"
+        android:fontFamily="sans-serif-black"
+        android:text="1"
+        android:textColor="@color/primary" />
+
+    <!-- Các cột Thứ -->
+    <TextView android:id="@+id/tv_mon" style="@style/TimetableCell" android:layout_width="90dp"/>
+    <TextView android:id="@+id/tv_tue" style="@style/TimetableCell" android:layout_width="90dp"/>
+    <TextView android:id="@+id/tv_wed" style="@style/TimetableCell" android:layout_width="90dp"/>
+    <TextView android:id="@+id/tv_thu" style="@style/TimetableCell" android:layout_width="90dp"/>
+    <TextView android:id="@+id/tv_fri" style="@style/TimetableCell" android:layout_width="90dp"/>
+    <TextView android:id="@+id/tv_sat" style="@style/TimetableCell" android:layout_width="90dp"/>
+
+</LinearLayout>

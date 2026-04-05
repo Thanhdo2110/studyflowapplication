@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="@color/primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="sans-serif-black"
+                    android:text="THỜI KHÓA BIỂU"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.2"
+                    android:textAllCaps="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="16dp">
+
+                <!-- Header Row: Tiết, Thứ 2, Thứ 3... -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_timetable_header"
+                    android:orientation="horizontal">
+                    <TextView style="@style/TimetableHeaderCell" android:text="Tiết" android:layout_width="50dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Hai" android:layout_width="90dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Ba" android:layout_width="90dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Tư" android:layout_width="90dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Năm" android:layout_width="90dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Sáu" android:layout_width="90dp"/>
+                    <TextView style="@style/TimetableHeaderCell" android:text="Thứ Bảy" android:layout_width="90dp"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_timetable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_timetable_row" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </HorizontalScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -19,6 +19,7 @@ import com.example.studyflow.data.database.entities.PlanEntity;
 import com.example.studyflow.ui.plan.PlanAdapter;
 import com.example.studyflow.ui.plan.PlanFragment;
 import com.example.studyflow.ui.exam.ExamFragment;
+import com.example.studyflow.ui.timetable.TimetableFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -33,7 +34,7 @@ public class HomeFragment extends Fragment {
     private LinearProgressIndicator heroProgress;
     private CircularProgressIndicator cpPlanProgress;
     private MaterialButton btnStartTimer;
-    private TextView tvViewAllPlans;
+    private TextView tvViewAllPlans, btnTimetable;
     private MaterialCardView cardDailyGoal;
     
     private final Handler timerHandler = new Handler();
@@ -43,7 +44,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
             updateCountdownUI();
-            timerHandler.postDelayed(this, 60000); // Cập nhật mỗi phút
+            timerHandler.postDelayed(this, 60000); 
         }
     };
 
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment {
         heroProgress = view.findViewById(R.id.hero_progress);
         cpPlanProgress = view.findViewById(R.id.cp_home_plan_progress);
         btnStartTimer = view.findViewById(R.id.btn_home_start_timer);
+        btnTimetable = view.findViewById(R.id.btn_home_timetable);
         tvViewAllPlans = view.findViewById(R.id.tv_home_view_all_plans);
         cardDailyGoal = view.findViewById(R.id.card_daily_goal);
 
@@ -129,6 +131,15 @@ public class HomeFragment extends Fragment {
                 ((MainActivity) getActivity()).navigateToTimer(null, 0);
             }
         });
+
+        if (btnTimetable != null) {
+            btnTimetable.setOnClickListener(v -> {
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new TimetableFragment())
+                        .addToBackStack(null)
+                        .commit();
+            });
+        }
 
         tvViewAllPlans.setOnClickListener(v -> navigateToFragment(new PlanFragment(), R.id.nav_plan));
         cardDailyGoal.setOnClickListener(v -> navigateToFragment(new PlanFragment(), R.id.nav_plan));
