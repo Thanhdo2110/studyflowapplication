@@ -24,12 +24,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import java.util.Calendar;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel viewModel;
     private PlanAdapter planAdapter;
-    private TextView tvHeroExamName, tvPlanStats, tvNextExamPreview;
+    private TextView tvHeroExamName, tvPlanStats, tvNextExamPreview, tvGoalStatus;
     private TextView tvCountdownDays, tvCountdownHours, tvCountdownMinutes;
     private LinearProgressIndicator heroProgress;
     private CircularProgressIndicator cpPlanProgress;
@@ -57,9 +59,16 @@ public class HomeFragment extends Fragment {
         tvCountdownDays = view.findViewById(R.id.tv_countdown_days);
         tvCountdownHours = view.findViewById(R.id.tv_countdown_hours);
         tvCountdownMinutes = view.findViewById(R.id.tv_countdown_minutes);
+
         tvNextExamPreview = view.findViewById(R.id.tv_next_exam_preview);
         
         tvPlanStats = view.findViewById(R.id.tv_home_plan_stats);
+        tvGoalStatus = view.findViewById(R.id.tv_goal_status);
+        if (tvGoalStatus == null) {
+            // Find by text if ID is missing in older layout
+            tvGoalStatus = findViewByText(view, "Sắp hoàn thành!");
+        }
+
         heroProgress = view.findViewById(R.id.hero_progress);
         cpPlanProgress = view.findViewById(R.id.cp_home_plan_progress);
         btnStartTimer = view.findViewById(R.id.btn_home_start_timer);
@@ -102,14 +111,31 @@ public class HomeFragment extends Fragment {
                 
                 if (exams.size() > 1) {
                     ExamEntity nextExam = exams.get(1);
-                    long nextDiff = nextExam.getExamDate() - System.currentTimeMillis();
-                    long nextDays = nextDiff / (1000 * 60 * 60 * 24);
-                    String previewText = "Tiếp theo: " + nextExam.getName() + " (" + Math.max(0, (int)nextDays) + " ngày)";
+                    long diff = nextExam.getExamDate() - System.currentTimeMillis();
+                    String previewText;
+                    if (diff <= 0) {
+                        previewText = "Tiếp theo: " + nextExam.getName() + " (Hết)";
+                    } else {
+                        long days = diff / (1000 * 60 * 60 * 24);
+                        if (days >= 1) {
+                            previewText = "Tiếp theo: " + nextExam.getName() + " (" + (int)days + " ngày)";
+                        } else {
+                            long hours = diff / (1000 * 60 * 60);
+                            previewText = "Tiếp theo: " + nextExam.getName() + " (" + hours + "h)";
+                        }
+                    }
                     tvNextExamPreview.setText(previewText);
                     tvNextExamPreview.setVisibility(View.VISIBLE);
                 } else {
                     tvNextExamPreview.setVisibility(View.GONE);
                 }
+            } else {
+                tvHeroExamName.setText("Chưa có kỳ thi nào");
+                tvCountdownDays.setText("00");
+                tvCountdownHours.setText("00");
+                tvCountdownMinutes.setText("00");
+                heroProgress.setProgress(0);
+                tvNextExamPreview.setVisibility(View.GONE);
             }
         });
 
@@ -119,10 +145,13 @@ public class HomeFragment extends Fragment {
                 int completed = 0;
                 for (PlanEntity p : plans) if (p.isCompleted()) completed++;
                 tvPlanStats.setText(completed + "/" + plans.size());
+                
                 if (cpPlanProgress != null) {
                     cpPlanProgress.setMax(plans.size() > 0 ? plans.size() : 1);
                     cpPlanProgress.setProgress(completed);
                 }
+                
+                updateGoalStatusText(completed, plans.size());
             }
         });
 
@@ -150,22 +179,58 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    private void updateGoalStatusText(int completed, int total) {
+        if (tvGoalStatus == null) return;
+        
+        if (total == 0) {
+            tvGoalStatus.setText("Lên kế hoạch ngay!");
+        } else if (completed == 0) {
+            tvGoalStatus.setText("Bắt đầu thôi!");
+        } else if (completed == total) {
+            tvGoalStatus.setText("Đã hoàn thành!");
+        } else if (completed >= total / 2) {
+            tvGoalStatus.setText("Sắp hoàn thành!");
+        } else {
+            tvGoalStatus.setText("Đang tiến triển...");
+        }
+    }
+
+    private TextView findViewByText(View root, String text) {
+        if (root instanceof TextView && ((TextView) root).getText().toString().equals(text)) {
+            return (TextView) root;
+        }
+        if (root instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) root;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                TextView found = findViewByText(group.getChildAt(i), text);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
     private void updateCountdownUI() {
         if (currentUpcomingExam != null) {
             tvHeroExamName.setText(currentUpcomingExam.getName());
             
             long diff = currentUpcomingExam.getExamDate() - System.currentTimeMillis();
-            if (diff < 0) diff = 0;
-
-            long days = diff / (1000 * 60 * 60 * 24);
-            long hours = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-            long minutes = (diff % (1000 * 60 * 60)) / (1000 * 60);
-
-            tvCountdownDays.setText(String.format("%02d", days));
-            tvCountdownHours.setText(String.format("%02d", hours));
-            tvCountdownMinutes.setText(String.format("%02d", minutes));
             
-            heroProgress.setProgress(currentUpcomingExam.getProgress());
+            if (diff <= 0) {
+                tvCountdownDays.setText("00");
+                tvCountdownHours.setText("00");
+                tvCountdownMinutes.setText("00");
+                heroProgress.setProgress(100);
+            } else {
+                long days = diff / (1000 * 60 * 60 * 24);
+                long hours = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+                long minutes = (diff % (1000 * 60 * 60)) / (1000 * 60);
+
+                tvCountdownDays.setText(String.format("%02d", days));
+                tvCountdownHours.setText(String.format("%02d", hours));
+                tvCountdownMinutes.setText(String.format("%02d", minutes));
+                
+                heroProgress.setProgress(currentUpcomingExam.getProgress());
+            }
         }
     }
 

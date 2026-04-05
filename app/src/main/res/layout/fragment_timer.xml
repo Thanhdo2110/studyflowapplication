@@ -5,350 +5,179 @@
     android:id="@+id/timer_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="#FFFFFF">
 
+    <!-- Hiệu ứng pháo hoa khi hoàn thành -->
     <nl.dionsegijn.konfetti.xml.KonfettiView
         android:id="@+id/konfettiView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- Top Bar: Logo (Đã loại bỏ icon thừa) -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="24dp">
+            android:layout_height="64dp"
+            android:paddingHorizontal="24dp">
 
-            <!-- Floating Quote Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="8dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/white">
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_edit"
+                    app:tint="#6200EE" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Focus"
+                    android:textColor="#1A1C1C"
+                    android:textSize="20sp"
+                    android:letterSpacing="-0.02" />
+            </LinearLayout>
+        </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/tv_quote_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="“Học không biết chán, dạy người không biết mỏi.”"
-                        android:textAlignment="center"
-                        android:textColor="@color/on_surface"
-                        android:textSize="14sp"
-                        android:lineHeight="20sp" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-                    <TextView
-                        android:id="@+id/tv_quote_author"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:fontFamily="sans-serif-black"
-                        android:text="— Khổng Tử"
-                        android:textAlignment="center"
-                        android:textColor="@color/primary"
-                        android:textSize="11sp"
-                        android:alpha="0.8" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Main Timer Display Section -->
-            <TextView
-                android:id="@+id/tv_mode_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-black"
-                android:letterSpacing="0.2"
-                android:text="POMODORO"
-                android:textColor="@color/primary"
-                android:textSize="12sp"
-                android:textAllCaps="true" />
-
-            <!-- SỬA LỖI: Thêm clickable và focusable cho ô số -->
-            <TextView
-                android:id="@+id/tv_timer_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
-                android:fontFamily="sans-serif-light"
-                android:text="25:00"
-                android:textColor="@color/on_surface"
-                android:textSize="110sp"
-                android:letterSpacing="-0.02"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground" />
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/timer_progress"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="32dp"
-                android:progress="100"
-                app:indicatorColor="@color/primary"
-                app:trackColor="@color/surface_container_high"
-                app:trackCornerRadius="5dp"
-                app:trackThickness="10dp" />
-
-            <!-- Control Center -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp">
 
-                <!-- Reset Button -->
-                <LinearLayout
-                    android:id="@+id/btn_reset"
+                <!-- Nhãn công việc -->
+                <TextView
+                    android:id="@+id/tv_mode_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Viết nháp bài luận"
+                    android:textColor="#7A7488"
+                    android:textSize="15sp"
+                    android:alpha="0.8" />
 
+                <!-- Đồng hồ khổng lồ (Đã điều chỉnh về 110sp theo yêu cầu) -->
+                <TextView
+                    android:id="@+id/tv_timer_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:fontFamily="sans-serif-thin"
+                    android:letterSpacing="-0.05"
+                    android:text="25:00"
+                    android:textColor="#1A1C1C"
+                    android:textSize="110sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+                <!-- Spacer để đẩy nút xuống dưới -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Bộ điều khiển trung tâm -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!-- Nút Reset -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_reset"
                         android:layout_width="52dp"
                         android:layout_height="52dp"
-                        app:cardBackgroundColor="@color/red_100"
+                        app:cardBackgroundColor="#FCFCFD"
                         app:cardCornerRadius="26dp"
                         app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/red_600">
-
+                        app:strokeColor="#EBEBEB"
+                        app:strokeWidth="1dp">
                         <ImageView
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_replay"
-                            app:tint="@color/red_600" />
+                            app:tint="#494456" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <TextView
-                        android:id="@+id/tv_label_reset"
+                    <!-- Nút Play lớn -->
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_play_pause"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:fontFamily="sans-serif-bold"
-                        android:text="Đặt lại"
-                        android:textColor="@color/on_surface_variant"
-                        android:textSize="11sp" />
-                </LinearLayout>
+                        android:layout_marginHorizontal="24dp"
+                        app:backgroundTint="#6200EE"
+                        app:elevation="4dp"
+                        app:fabCustomSize="80dp"
+                        app:maxImageSize="40dp"
+                        android:src="@drawable/ic_play_arrow"
+                        app:tint="@color/white"
+                        app:borderWidth="0dp"/>
 
-                <!-- Play/Pause FAB -->
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab_play_pause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:src="@drawable/ic_play_arrow"
-                    app:backgroundTint="@color/primary"
-                    app:elevation="8dp"
-                    app:fabCustomSize="80dp"
-                    app:maxImageSize="40dp"
-                    app:tint="@color/white" />
-
-                <!-- Finish Button -->
-                <LinearLayout
-                    android:id="@+id/btn_save_session"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless">
-
+                    <!-- Nút Xong -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_save_session"
                         android:layout_width="52dp"
                         android:layout_height="52dp"
-                        app:cardBackgroundColor="@color/green_100"
+                        app:cardBackgroundColor="#FCFCFD"
                         app:cardCornerRadius="26dp"
                         app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/green_600">
-
+                        app:strokeColor="#EBEBEB"
+                        app:strokeWidth="1dp">
                         <ImageView
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_check"
-                            app:tint="@color/green_600" />
+                            app:tint="#494456" />
                     </com.google.android.material.card.MaterialCardView>
-
-                    <TextView
-                        android:id="@+id/tv_label_pause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:fontFamily="sans-serif-bold"
-                        android:text="Xong"
-                        android:textColor="@color/on_surface_variant"
-                        android:textSize="11sp" />
                 </LinearLayout>
+
+                <!-- Lời nhắc nhỏ ở dưới cùng -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Học xong rồi nhớ bấm hoàn thành bạn nhé"
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"
+                    android:alpha="0.6" />
+
+                <!-- Các thành phần ẩn để giữ logic code -->
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/timer_progress"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+                <TextView android:id="@+id/tv_quote_text" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <TextView android:id="@+id/tv_quote_author" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <TextView android:id="@+id/tv_label_study_mode" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <View android:id="@+id/mode_pomodoro" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <TextView android:id="@+id/mode_15_min" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <TextView android:id="@+id/mode_30_min" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+                <TextView android:id="@+id/mode_60_min" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_label_study_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginTop="32dp"
-                android:fontFamily="sans-serif-black"
-                android:text="Khám phá chế độ"
-                android:textColor="@color/on_surface"
-                android:textSize="18sp" />
-
-            <!-- Galaxy Mode Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mode_pomodoro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/primary_fixed">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="20dp">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/mode_icon_container"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/white">
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_auto_awesome"
-                            app:tint="@color/primary" />
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_toEndOf="@id/mode_icon_container"
-                        android:layout_centerVertical="true"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-black"
-                            android:text="Không gian Galaxy"
-                            android:textColor="@color/on_primary_fixed"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:alpha="0.7"
-                            android:text="Tập trung sâu trong vũ trụ"
-                            android:textColor="@color/on_primary_fixed"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/on_primary_fixed" />
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Quick Duration Selection -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mode_15_min"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/white">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="15m"
-                        android:fontFamily="sans-serif-black"
-                        android:textColor="@color/primary" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mode_30_min"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/white">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="30m"
-                        android:fontFamily="sans-serif-black"
-                        android:textColor="@color/primary" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mode_60_min"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/white">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:text="60m"
-                        android:fontFamily="sans-serif-black"
-                        android:textColor="@color/primary" />
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </FrameLayout>

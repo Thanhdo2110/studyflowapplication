@@ -111,11 +111,25 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Lời nhắc kế hoạch (Đã chỉnh nhỏ và mờ hơn) -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="16dp"
+                android:text="Sau khi đã setup kế hoạch bạn có thể tự học rồi tích hoàn thành hoặc hãy click vào kế hoạch của bạn để chúng ta bắt đầu học nhé"
+                android:textColor="@color/on_surface_variant"
+                android:textSize="11sp"
+                android:alpha="0.5"
+                android:fontFamily="sans-serif-medium"
+                android:lineHeight="16sp"
+                android:textAlignment="center" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_plans"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_plan" />
 

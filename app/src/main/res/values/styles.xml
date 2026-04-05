@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- CircleImage for MaterialCardView -->
     <style name="CircleImage" parent="">
         <item name="cornerSize">50%</item>
     </style>
@@ -15,36 +16,38 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <!-- Timetable Styles -->
+    <!-- Timetable Header: Màu xanh nhạt chuyên nghiệp -->
     <style name="TimetableHeaderCell">
-        <item name="android:layout_width">85dp</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">45dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">#1A1C1C</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:background">#E3F2FD</item>
         <item name="android:padding">4dp</item>
     </style>
 
+    <!-- Timetable Cell: Sạch sẽ, chữ giữa -->
     <style name="TimetableCell">
-        <item name="android:layout_width">85dp</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:padding">8dp</item>
         <item name="android:background">@drawable/bg_timetable_cell</item>
         <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/on_surface</item>
+        <item name="android:textColor">#494456</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <!-- Section Header (SÁNG/CHIỀU): Font chữ và màu nền -->
     <style name="TimetableSectionHeader">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">32dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">12dp</item>
-        <item name="android:background">@color/surface_container_low</item>
-        <item name="android:textColor">@color/primary</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">#F5F5F5</item>
+        <item name="android:textColor">#674DAE</item>
+        <item name="android:textSize">11sp</item>
         <item name="android:fontFamily">sans-serif-black</item>
         <item name="android:letterSpacing">0.1</item>
     </style>

@@ -17,6 +17,7 @@ import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.ExamEntity;
 import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -45,7 +46,8 @@ public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickLis
 
         viewModel = new ViewModelProvider(this).get(ExamViewModel.class);
         viewModel.getAllExams().observe(getViewLifecycleOwner(), exams -> {
-            adapter.submitList(exams);
+            // Ép buộc cập nhật danh sách bằng cách tạo list mới
+            adapter.submitList(new ArrayList<>(exams));
         });
 
         etDate.setOnClickListener(v -> showDatePicker());
@@ -57,7 +59,6 @@ public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickLis
                 return;
             }
             
-            // Chuẩn hóa thời gian về 00:00:00 trước khi lưu
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
@@ -67,15 +68,18 @@ public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickLis
                 ExamEntity exam = new ExamEntity(name, calendar.getTimeInMillis(), "Chung", 0);
                 viewModel.insert(exam);
             } else {
-                editingExam.setName(name);
-                editingExam.setExamDate(calendar.getTimeInMillis());
-                viewModel.update(editingExam);
+                ExamEntity updatedExam = new ExamEntity(name, calendar.getTimeInMillis(), 
+                        editingExam.getCategory(), editingExam.getProgress());
+                updatedExam.setId(editingExam.getId());
+                
+                viewModel.update(updatedExam);
                 editingExam = null;
                 btnSave.setText("Lưu");
             }
             
             etName.setText("");
             etDate.setText("");
+            calendar = Calendar.getInstance();
         });
 
         return view;

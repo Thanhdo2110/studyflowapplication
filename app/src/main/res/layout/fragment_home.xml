@@ -80,6 +80,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="32sp" />
                             <TextView
+                                android:id="@+id/tv_label_days"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="NGÀY"
@@ -115,6 +116,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="32sp" />
                             <TextView
+                                android:id="@+id/tv_label_hours"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="GIỜ"
@@ -150,6 +152,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="32sp" />
                             <TextView
+                                android:id="@+id/tv_label_minutes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="PHÚT"
@@ -367,6 +370,7 @@
                 </FrameLayout>
 
                 <TextView
+                    android:id="@+id/tv_goal_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

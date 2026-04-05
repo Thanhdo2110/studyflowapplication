@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="280dp"
+    android:height="280dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Minimalist desk illustration path -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M3,18h18v2h-18z M5,18l1, -8h12l1,8z M8,10l0.5, -3h7l0.5,3z M12,4m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
+    <path
+        android:fillColor="#000000"
+        android:alpha="0.3"
+        android:pathData="M7,14h10v1h-10z" />
+</vector>

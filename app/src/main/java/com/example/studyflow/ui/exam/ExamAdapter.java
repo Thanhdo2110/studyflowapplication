@@ -14,7 +14,6 @@ import com.example.studyflow.R;
 import com.example.studyflow.data.database.entities.ExamEntity;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -60,7 +59,7 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
     }
 
     static class ExamViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvName, tvDate, tvDays;
+        private final TextView tvName, tvDate, tvDays, tvDaysLabel;
         private final CircularProgressIndicator progressIndicator;
         private final ImageView ivMore;
 
@@ -69,6 +68,7 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
             tvName = itemView.findViewById(R.id.tv_exam_name);
             tvDate = itemView.findViewById(R.id.tv_exam_date);
             tvDays = itemView.findViewById(R.id.tv_days_remaining);
+            tvDaysLabel = itemView.findViewById(R.id.tv_days_label);
             progressIndicator = itemView.findViewById(R.id.progress_exam);
             ivMore = itemView.findViewById(R.id.iv_exam_more);
         }
@@ -79,31 +79,41 @@ public class ExamAdapter extends ListAdapter<ExamEntity, ExamAdapter.ExamViewHol
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM, yyyy", new Locale("vi", "VN"));
             tvDate.setText(sdf.format(new Date(exam.getExamDate())));
             
-            // Logic tính ngày chính xác (đã chuẩn hóa 00:00:00)
-            Calendar today = Calendar.getInstance();
-            today.set(Calendar.HOUR_OF_DAY, 0); today.set(Calendar.MINUTE, 0); today.set(Calendar.SECOND, 0); today.set(Calendar.MILLISECOND, 0);
-
-            Calendar examDate = Calendar.getInstance();
-            examDate.setTimeInMillis(exam.getExamDate());
-            examDate.set(Calendar.HOUR_OF_DAY, 0); examDate.set(Calendar.MINUTE, 0); examDate.set(Calendar.SECOND, 0); examDate.set(Calendar.MILLISECOND, 0);
-
-            long diff = examDate.getTimeInMillis() - today.getTimeInMillis();
-            int days = (int) (diff / (1000 * 60 * 60 * 24));
-
-            tvDays.setText(String.valueOf(Math.max(0, days)));
-            progressIndicator.setProgress(exam.getProgress());
+            long diff = exam.getExamDate() - System.currentTimeMillis();
+            
+            if (diff <= 0) {
+                tvDays.setText("Hết");
+                tvDaysLabel.setText("thời gian");
+                progressIndicator.setProgress(100);
+            } else {
+                long days = diff / (1000 * 60 * 60 * 24);
+                if (days >= 1) {
+                    tvDays.setText(String.valueOf((int)days));
+                    tvDaysLabel.setText("ngày nữa");
+                } else {
+                    long hours = diff / (1000 * 60 * 60);
+                    if (hours >= 1) {
+                        tvDays.setText(String.valueOf(hours));
+                        tvDaysLabel.setText("giờ nữa");
+                    } else {
+                        long mins = diff / (1000 * 60);
+                        tvDays.setText(String.valueOf(mins));
+                        tvDaysLabel.setText("phút nữa");
+                    }
+                }
+                progressIndicator.setProgress(exam.getProgress());
+            }
 
             if (ivMore != null) {
                 ivMore.setOnClickListener(v -> {
                     PopupMenu popup = new PopupMenu(v.getContext(), v);
                     popup.getMenuInflater().inflate(R.menu.menu_item_options, popup.getMenu());
 
-                    if (popup.getMenu().findItem(R.id.action_edit) != null) {
-                        popup.getMenu().findItem(R.id.action_edit).setVisible(false);
-                    }
-
                     popup.setOnMenuItemClickListener(item -> {
-                        if (item.getItemId() == R.id.action_delete) {
+                        if (item.getItemId() == R.id.action_edit) {
+                            if (listener != null) listener.onEditClick(exam);
+                            return true;
+                        } else if (item.getItemId() == R.id.action_delete) {
                             if (listener != null) listener.onDeleteClick(exam);
                             return true;
                         }

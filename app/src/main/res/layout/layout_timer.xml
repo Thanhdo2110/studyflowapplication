@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk-res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -75,16 +75,21 @@
                 android:letterSpacing="0.2" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_timer_display"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="monospace"
                 android:text="25:00"
                 android:textColor="@color/on_surface"
-                android:textSize="80sp"
-                android:textStyle="bold" />
+                android:textSize="44sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:gravity="center" />
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_timer"
                 android:layout_width="match_parent"
                 android:layout_height="12dp"
                 android:layout_marginTop="32dp"
@@ -107,11 +112,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_reset"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         app:cardBackgroundColor="@color/red_100"
                         app:cardCornerRadius="16dp"
-                        app:strokeWidth="0dp">
+                        app:strokeWidth="0dp"
+                        android:clickable="true"
+                        android:focusable="true">
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
@@ -129,6 +137,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="32dp"
@@ -144,11 +153,14 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_pause"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         app:cardBackgroundColor="@color/orange_100"
                         app:cardCornerRadius="16dp"
-                        app:strokeWidth="0dp">
+                        app:strokeWidth="0dp"
+                        android:clickable="true"
+                        android:focusable="true">
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
@@ -177,6 +189,7 @@
                 android:textSize="18sp" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_mode_pomodoro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -240,6 +253,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_mode_short_break"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -283,6 +297,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_mode_long_break"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -327,6 +342,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_session"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_marginTop="32dp"
