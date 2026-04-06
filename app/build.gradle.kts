@@ -55,4 +55,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Use Modern AdMob dependency to fix "Duplicate class" error
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
 }

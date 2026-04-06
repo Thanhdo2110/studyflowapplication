@@ -5,11 +5,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,14 +30,32 @@ import com.example.studyflow.ui.history.HistoryFragment;
 import com.example.studyflow.ui.home.HomeFragment;
 import com.example.studyflow.ui.plan.PlanFragment;
 import com.example.studyflow.ui.timer.TimerFragment;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivityAd";
     private BottomNavigationView bottomNav;
     private DrawerLayout drawerLayout;
     private TextView tvToolbarTitle;
+    private AdView adView;
+    private InterstitialAd mInterstitialAd;
+    
+    // Quản lý tần suất quảng cáo
+    private int actionCount = 0;
+    private static final int ACTION_THRESHOLD = 5; // Hiện sau mỗi 5 lần click
+    private long lastAdShowTime = 0;
+    private static final long AD_COOLDOWN_MS = 120000; // Cách nhau ít nhất 2 phút (120000ms)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
+        // Khởi tạo Mobile Ads SDK
+        MobileAds.initialize(this, initializationStatus -> {
+            Log.d(TAG, "AdMob SDK Initialized");
+            loadInterstitialAd();
+        });
+
+        initAdmob();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
@@ -81,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
                 tvToolbarTitle.setText(title);
+                checkAndShowAd(); // Kiểm tra tần suất trước khi hiện
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
@@ -104,6 +133,56 @@ public class MainActivity extends AppCompatActivity {
         DailyReminderReceiver.schedule(this);
     }
 
+    private void initAdmob() {
+        adView = findViewById(R.id.adView);
+        if (adView != null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+    }
+
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, getString(R.string.interstitial_full_screen), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                mInterstitialAd = null;
+                                lastAdShowTime = System.currentTimeMillis(); // Cập nhật thời điểm hiện ad
+                                loadInterstitialAd();
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                mInterstitialAd = null;
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    private void checkAndShowAd() {
+        actionCount++;
+        long currentTime = System.currentTimeMillis();
+        
+        // Điều kiện hiện: Đã qua 5 lần click VÀ cách lần cuối ít nhất 2 phút
+        if (actionCount >= ACTION_THRESHOLD && (currentTime - lastAdShowTime) >= AD_COOLDOWN_MS) {
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(this);
+                actionCount = 0; // Reset bộ đếm
+            }
+        }
+    }
+
     private void setupBottomNavListener() {
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -120,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
                         .commit();
+                checkAndShowAd(); // Kiểm tra tần suất trước khi hiện
             }
             return true;
         });
@@ -136,9 +216,26 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, timerFragment)
                 .commit();
         
-        // Tạm thời tắt listener để không bị tạo mới Fragment trống đè lên
         bottomNav.setOnItemSelectedListener(null);
         bottomNav.setSelectedItemId(R.id.nav_timer);
-        setupBottomNavListener(); // Bật lại listener
+        setupBottomNavListener();
+    }
+
+    @Override
+    public void onPause() {
+        if (adView != null) adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) adView.resume();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) adView.destroy();
+        super.onDestroy();
     }
 }

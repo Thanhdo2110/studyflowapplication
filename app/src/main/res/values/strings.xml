@@ -8,4 +8,16 @@
     <string name="content_description_menu">Menu</string>
     <string name="content_description_profile">Profile</string>
     <string name="quote_author_format">— %1$s</string>
+
+    <!-- AdMob App ID -->
+    <string name="app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <!-- <string name="app_id">ca-app-pub-1855989300382461~9556585141</string> -->
+
+    <!-- Banner ID -->
+    <string name="banner_home_footer">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- <string name="banner_home_footer">ca-app-pub-1855989300382461/3697753800</string> -->
+
+    <!-- Interstitial ID (Quảng cáo xen kẽ) -->
+    <string name="interstitial_full_screen">ca-app-pub-3940256099942544/1033173712</string>
+    <!-- <string name="interstitial_full_screen">ca-app-pub-1855989300382461/7767388579</string> -->
 </resources>
