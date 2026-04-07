@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
     
     // Quản lý tần suất quảng cáo
     private int actionCount = 0;
-    private static final int ACTION_THRESHOLD = 5; // Hiện sau mỗi 5 lần click
+    private static final int ACTION_THRESHOLD = 5;
     private long lastAdShowTime = 0;
-    private static final long AD_COOLDOWN_MS = 120000; // Cách nhau ít nhất 2 phút (120000ms)
+    private static final long AD_COOLDOWN_MS = 120000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +63,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
-        // Khởi tạo Mobile Ads SDK
+        // Khởi tạo Mobile Ads SDK trước, sau khi xong mới gọi initAdmob()
         MobileAds.initialize(this, initializationStatus -> {
             Log.d(TAG, "AdMob SDK Initialized");
-            loadInterstitialAd();
+            // Đảm bảo SDK sẵn sàng trước khi load bất kỳ quảng cáo nào
+            runOnUiThread(() -> {
+                initAdmob();
+                loadInterstitialAd();
+            });
         });
-
-        initAdmob();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
                 tvToolbarTitle.setText(title);
-                checkAndShowAd(); // Kiểm tra tần suất trước khi hiện
+                checkAndShowAd();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
@@ -136,6 +138,18 @@ public class MainActivity extends AppCompatActivity {
     private void initAdmob() {
         adView = findViewById(R.id.adView);
         if (adView != null) {
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    Log.d(TAG, "Banner Ad Loaded Successfully");
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    Log.e(TAG, "Banner Ad Failed to Load: " + loadAdError.getMessage() + " Code: " + loadAdError.getCode());
+                }
+            });
+
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         }
@@ -152,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onAdDismissedFullScreenContent() {
                                 mInterstitialAd = null;
-                                lastAdShowTime = System.currentTimeMillis(); // Cập nhật thời điểm hiện ad
+                                lastAdShowTime = System.currentTimeMillis();
                                 loadInterstitialAd();
                             }
 
@@ -173,12 +187,10 @@ public class MainActivity extends AppCompatActivity {
     private void checkAndShowAd() {
         actionCount++;
         long currentTime = System.currentTimeMillis();
-        
-        // Điều kiện hiện: Đã qua 5 lần click VÀ cách lần cuối ít nhất 2 phút
         if (actionCount >= ACTION_THRESHOLD && (currentTime - lastAdShowTime) >= AD_COOLDOWN_MS) {
             if (mInterstitialAd != null) {
                 mInterstitialAd.show(this);
-                actionCount = 0; // Reset bộ đếm
+                actionCount = 0;
             }
         }
     }
@@ -199,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, selectedFragment)
                         .commit();
-                checkAndShowAd(); // Kiểm tra tần suất trước khi hiện
+                checkAndShowAd();
             }
             return true;
         });
