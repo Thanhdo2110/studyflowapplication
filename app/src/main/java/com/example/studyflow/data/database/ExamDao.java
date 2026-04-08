@@ -23,6 +23,11 @@ public interface ExamDao {
     @Delete
     void delete(ExamEntity exam);
 
+    // Logic: Ngày chưa tới (còn đếm) xếp trên, ngày đã qua xếp dưới cùng.
+    // Sắp xếp theo ngày gần nhất lên đầu cho những ngày chưa tới.
+    @Query("SELECT * FROM exams ORDER BY CASE WHEN examDate >= :currentTime THEN 0 ELSE 1 END ASC, examDate ASC")
+    LiveData<List<ExamEntity>> getAllExamsOrdered(long currentTime);
+
     @Query("SELECT * FROM exams ORDER BY examDate ASC")
     LiveData<List<ExamEntity>> getAllExams();
 

@@ -9,19 +9,12 @@
     <string name="content_description_profile">Profile</string>
     <string name="quote_author_format">— %1$s</string>
 
-    <!-- HƯỚNG DẪN: Nếu muốn hiện quảng cáo để TEST, hãy dùng mã ở dòng có chữ (TEST) -->
-    <!-- Khi nào muốn dùng quảng cáo THẬT để kiếm tiền, hãy dùng mã ở dòng có chữ (REAL) -->
+    <!-- AdMob App ID -->
+    <string name="app_id">ca-app-pub-1855989300382461~9556585141</string>
 
-    <!-- 1. AdMob App ID -->
-    <string name="app_id">ca-app-pub-1855989300382461~9556585141</string> <!-- (REAL) -->
-    <!-- <string name="app_id">ca-app-pub-3940256099942544~3347511713</string> --> <!-- (TEST) -->
+    <!-- Banner ID -->
+    <string name="banner_home_footer">ca-app-pub-1855989300382461/5321062325</string>
 
-    <!-- 2. Banner ID (Quảng cáo biểu ngữ) -->
-    <!-- Nếu hiện tại mã REAL bị lỗi Code 3, bạn có thể tạm mở dòng TEST phía dưới để xem thử -->
-    <string name="banner_home_footer">ca-app-pub-1855989300382461/3697753800</string> <!-- (REAL) -->
-    <!-- <string name="banner_home_footer">ca-app-pub-3940256099942544/6300978111</string> --> <!-- (TEST) -->
-
-    <!-- 3. Interstitial ID (Quảng cáo trung gian) -->
-    <string name="interstitial_full_screen">ca-app-pub-1855989300382461/7767388579</string> <!-- (REAL) -->
-    <!-- <string name="interstitial_full_screen">ca-app-pub-3940256099942544/1033173712</string> --> <!-- (TEST) -->
+    <!-- Interstitial ID -->
+    <string name="interstitial_full_screen">ca-app-pub-1855989300382461/7767388579</string>
 </resources>

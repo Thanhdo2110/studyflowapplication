@@ -45,8 +45,9 @@ public class ExamFragment extends Fragment implements ExamAdapter.OnExamClickLis
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(ExamViewModel.class);
-        viewModel.getAllExams().observe(getViewLifecycleOwner(), exams -> {
-            // Ép buộc cập nhật danh sách bằng cách tạo list mới
+        
+        // Sử dụng phương thức sắp xếp mới: Ngày chưa tới ở trên, đã qua ở dưới
+        viewModel.getAllExamsOrdered().observe(getViewLifecycleOwner(), exams -> {
             adapter.submitList(new ArrayList<>(exams));
         });
 

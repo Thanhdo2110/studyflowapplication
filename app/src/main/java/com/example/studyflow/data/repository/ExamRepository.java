@@ -9,16 +9,18 @@ import java.util.List;
 
 public class ExamRepository {
     private ExamDao examDao;
-    private LiveData<List<ExamEntity>> allExams;
 
     public ExamRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         examDao = db.examDao();
-        allExams = examDao.getAllExams();
     }
 
     public LiveData<List<ExamEntity>> getAllExams() {
-        return allExams;
+        return examDao.getAllExams();
+    }
+
+    public LiveData<List<ExamEntity>> getAllExamsOrdered(long currentTime) {
+        return examDao.getAllExamsOrdered(currentTime);
     }
 
     public void insert(ExamEntity exam) {

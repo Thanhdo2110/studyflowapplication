@@ -10,16 +10,14 @@ import java.util.List;
 
 public class ExamViewModel extends AndroidViewModel {
     private ExamRepository repository;
-    private final LiveData<List<ExamEntity>> allExams;
 
     public ExamViewModel(@NonNull Application application) {
         super(application);
         repository = new ExamRepository(application);
-        allExams = repository.getAllExams();
     }
 
-    public LiveData<List<ExamEntity>> getAllExams() {
-        return allExams;
+    public LiveData<List<ExamEntity>> getAllExamsOrdered() {
+        return repository.getAllExamsOrdered(System.currentTimeMillis());
     }
 
     public void insert(ExamEntity exam) {
